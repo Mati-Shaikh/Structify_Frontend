@@ -7,10 +7,42 @@ const SignupPage = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [age, setAge] = useState('');
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Signup submitted:', { email, password, firstName, lastName, age });
+    const data = {
+      FirstName: firstName,
+      LastName: lastName,
+      Email: email,
+      Password: password,
+      Age: age,
+    };
+
+    try {
+      const response = await fetch('http://localhost:3005/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'An error occurred');
+        setSuccess(false);
+      } else {
+        const responseData = await response.json();
+        console.log('Signup success:', responseData);
+        setError(null);
+        setSuccess(true);
+      }
+    } catch (err) {
+      setError('Failed to connect to the server');
+      setSuccess(false);
+    }
   };
 
   return (
@@ -43,6 +75,8 @@ const SignupPage = () => {
               <span className="px-2 bg-gray-50 text-gray-500">OR</span>
             </div>
           </div>
+
+          {/* Signup form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="relative">
               <input
@@ -103,6 +137,15 @@ const SignupPage = () => {
               Sign up
             </button>
           </form>
+
+          {/* Error and success message */}
+          {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
+          {success && (
+            <p className="mt-4 text-green-500 text-center">
+              Signup successful! You can now log in.
+            </p>
+          )}
+
           <p className="mt-4 text-center text-sm text-gray-600">
             By clicking Sign up, I agree to Structify's{' '}
             <a href="/" className="text-blue-500 hover:underline">Terms</a> and{' '}

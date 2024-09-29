@@ -1,43 +1,87 @@
 import React, { useState } from 'react';
-import { BarChart2, Zap } from 'lucide-react';
+import { List, BarChart2, ArrowUpDown } from 'lucide-react';
 
-const categories = ['Math', 'Data Analysis', 'CS & Programming', 'Science', 'Electives'];
+const categories = ['Linked Lists', 'Queues', 'Stacks'];
 
 const courses = {
-  'Math': [
-    { icon: <Zap size={20} />, name: 'Solving Equations' },
-    { icon: <BarChart2 size={20} />, name: 'Understanding Graphs' },
-    { icon: <Zap size={20} />, name: 'Geometry Fundamentals' },
-    { icon: <Zap size={20} />, name: 'Vectors' },
-    { icon: <Zap size={20} />, name: 'Systems of Equations' },
-    { icon: <Zap size={20} />, name: 'Functions & Quadratics' },
-    { icon: <Zap size={20} />, name: 'Calculus in a Nutshell' },
+  'Linked Lists': [
+    { icon: <List size={20} />, name: 'Introduction to Linked Lists' },
+    { icon: <List size={20} />, name: 'Singly vs Doubly Linked Lists' },
+    { icon: <List size={20} />, name: 'Inserting and Deleting Nodes' },
+    { icon: <List size={20} />, name: 'Traversing a Linked List' },
+    { icon: <List size={20} />, name: 'Reversing a Linked List' },
   ],
-  'Data Analysis': [
-    { icon: <BarChart2 size={20} />, name: 'Exploring Data Visually' },
-    { icon: <BarChart2 size={20} />, name: 'Explaining Variation' },
-    { icon: <BarChart2 size={20} />, name: 'Introduction to Probability' },
-    { icon: <BarChart2 size={20} />, name: 'Predicting with Probability' },
-    { icon: <BarChart2 size={20} />, name: 'Introduction to Neural Networks' },
-    { icon: <BarChart2 size={20} />, name: 'Casino Probability' },
-    { icon: <BarChart2 size={20} />, name: 'Perplexing Probability' },
+  'Queues': [
+    { icon: <BarChart2 size={20} />, name: 'Queue Basics' },
+    { icon: <BarChart2 size={20} />, name: 'Implementing a Queue' },
+    { icon: <BarChart2 size={20} />, name: 'Circular Queues' },
+    { icon: <BarChart2 size={20} />, name: 'Priority Queues' },
+    { icon: <BarChart2 size={20} />, name: 'Queue Applications' },
+  ],
+  'Stacks': [
+    { icon: <ArrowUpDown size={20} />, name: 'Stack Fundamentals' },
+    { icon: <ArrowUpDown size={20} />, name: 'Implementing a Stack' },
+    { icon: <ArrowUpDown size={20} />, name: 'Stack Operations' },
+    { icon: <ArrowUpDown size={20} />, name: 'Balancing Parentheses' },
+    { icon: <ArrowUpDown size={20} />, name: 'Reverse Polish Notation' },
+  ],
+};
+
+const questions = {
+  'Linked Lists': [
+    {
+      question: "What is the time complexity of inserting an element at the beginning of a singly linked list?",
+      options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
+      correct: "O(1)",
+    },
+  ],
+  'Queues': [
+    {
+      question: "Which principle does a queue follow?",
+      options: ["LIFO", "FIFO", "LILO", "FILO"],
+      correct: "FIFO",
+    },
+  ],
+  'Stacks': [
+    {
+      question: "What operation is used to add an element to the top of a stack?",
+      options: ["Push", "Pop", "Peek", "Insert"],
+      correct: "Push",
+    },
   ],
 };
 
 const SubTopics = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Math');
+  const [selectedCategory, setSelectedCategory] = useState('Linked Lists');
+  const [userAnswer, setUserAnswer] = useState('');
+  const [feedback, setFeedback] = useState('');
+
+  const handleSubmit = () => {
+    const currentQuestion = questions[selectedCategory][0];
+    if (userAnswer === currentQuestion.correct) {
+      setFeedback("Correct! You've got it!");
+    } else if (userAnswer === '') {
+      setFeedback("Please select an answer.");
+    } else {
+      setFeedback("Not quite. Try again!");
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-16">
-      <h2 className="text-4xl font-bold text-center mb-8">Guided courses for every journey</h2>
+      <h2 className="text-4xl font-bold text-center mb-8">Master Data Structures with Structify</h2>
 
       <div className="flex justify-center mb-8">
         {categories.map((category) => (
           <button
             key={category}
-            className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category ? 'bg-gray-200' : 'bg-white'
+            className={`px-4 py-2 rounded-full mr-2 ${selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200'
               }`}
-            onClick={() => setSelectedCategory(category)}
+            onClick={() => {
+              setSelectedCategory(category);
+              setFeedback('');
+              setUserAnswer('');
+            }}
           >
             {category}
           </button>
@@ -55,9 +99,6 @@ const SubTopics = () => {
               </li>
             ))}
           </ul>
-          {selectedCategory === 'Math' && (
-            <button className="text-gray-500 mt-4">+ 15 additional courses</button>
-          )}
         </div>
 
         <div className="w-2/3">
@@ -68,36 +109,37 @@ const SubTopics = () => {
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
               </div>
-              <span className="text-sm">{selectedCategory.toUpperCase()}</span>
+              <span className="text-sm">{selectedCategory.toUpperCase()} CHALLENGE</span>
             </div>
             <div className="bg-white p-8">
-              {selectedCategory === 'Math' ? (
-                <div>
-                  <h3 className="text-2xl font-bold mb-4">Surface Area</h3>
-                  <img src="/api/placeholder/400/200" alt="Surface Area Diagram" className="mb-4" />
-                  <p>Fill in an expression for the area of the box's base in terms of x.</p>
-                  <div className="flex items-center mt-4">
-                    <span className="mr-2">B =</span>
-                    <input type="text" className="border rounded px-2 py-1 w-20 mr-2" />
-                    <span>cm²</span>
+              <h3 className="text-2xl font-bold mb-4">Quick Quiz</h3>
+              <p className="mb-4">{questions[selectedCategory][0].question}</p>
+              <div className="space-y-2 mt-4">
+                {questions[selectedCategory][0].options.map((option) => (
+                  <div key={option} className="flex items-center">
+                    <input
+                      type="radio"
+                      id={option}
+                      name="answer"
+                      value={option}
+                      checked={userAnswer === option}
+                      onChange={(e) => setUserAnswer(e.target.value)}
+                      className="mr-2"
+                    />
+                    <label htmlFor={option}>{option}</label>
                   </div>
-                  <button className="bg-black text-white px-4 py-2 rounded mt-4">Submit</button>
-                </div>
-              ) : (
-                <div>
-                  <h3 className="text-2xl font-bold mb-4">Data Analysis Preview</h3>
-                  <img src="/api/placeholder/400/200" alt="Data Analysis Preview" className="mb-4" />
-                  <p>What proportion of moviegoers saw both movies?</p>
-                  <div className="space-y-2 mt-4">
-                    {['0.05', '0.15', '0.25'].map((option) => (
-                      <div key={option} className="flex items-center">
-                        <input type="radio" id={option} name="proportion" className="mr-2" />
-                        <label htmlFor={option}>{option}</label>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="bg-black text-white px-4 py-2 rounded mt-4">Submit</button>
-                </div>
+                ))}
+              </div>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+              {feedback && (
+                <p className={`mt-4 ${feedback.includes('Correct') ? 'text-green-500' : 'text-red-500'}`}>
+                  {feedback}
+                </p>
               )}
             </div>
           </div>

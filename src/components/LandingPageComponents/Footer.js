@@ -7,7 +7,7 @@ const Footer = () => {
             <div className="max-w-6xl mx-auto px-4">
                 <div className="flex flex-wrap justify-between">
                     <div className="w-full md:w-1/4 mb-4">
-                        <h3 className="font-bold mb-2">Brilliant</h3>
+                        <h3 className="font-bold mb-2">Structify</h3>
                         <div className="flex space-x-4 mt-4">
                             <Facebook size={20} />
                             <Instagram size={20} />
