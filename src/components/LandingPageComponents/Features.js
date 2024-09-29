@@ -1,45 +1,68 @@
 import React from 'react';
+import { BookOpen, GamepadIcon, BarChart, Award, Brain } from 'lucide-react';
+
+const FeatureItem = ({ Icon, title, description }) => (
+  <div className="flex items-start mb-8">
+    <div className="flex-shrink-0 mr-4">
+      <Icon className="w-8 h-8 text-blue-500" />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </div>
+  </div>
+);
 
 const Features = () => {
-    return (
-        <div className="max-w-6xl mx-auto px-4 py-16">
-            <div className='mb-24'>
-                <h2 className="text-center text-4xl font-bold mt-16 mb-4">
-                    Master concepts in 15 minutes a day
-                </h2>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Whether you're a complete beginner or ready to dive into machine learning and
-                    beyond, Brilliant makes it easy to level up fast with fun, bite-sized lessons.
-                </p>
-            </div>
-            <div className="flex flex-col md:flex-row justify-between items-center mb-16">
-                <div className="md:w-1/2 mb-8 md:mb-0">
-                    <img src="/api/placeholder/400/300" alt="Interactive graph" className="w-full h-auto" />
-                </div>
-                <div className="md:w-1/2 md:pl-12">
-                    <h2 className="text-3xl font-bold mb-4">Effective, hands-on learning</h2>
-                    <p className="text-gray-600">
-                        Visual, interactive lessons make concepts feel intuitive — so even complex ideas just
-                        click. Our real-time feedback and simple explanations make learning efficient.
-                    </p>
-                </div>
-            </div>
+  const features = [
+    {
+      Icon: GamepadIcon,
+      title: "Gamified Learning",
+      description: "Master DSA concepts through engaging games and interactive challenges."
+    },
+    {
+      Icon: BookOpen,
+      title: "Comprehensive Curriculum",
+      description: "Cover all essential DSA topics with our expertly crafted learning path."
+    },
+    {
+      Icon: BarChart,
+      title: "Performance Analytics",
+      description: "Track your progress with detailed analytics and personalized insights."
+    },
+    {
+      Icon: Award,
+      title: "Assessments & Quizzes",
+      description: "Reinforce your learning with regular assessments and fun quizzes."
+    },
+    {
+      Icon: Brain,
+      title: "Intelligent Tutoring",
+      description: "Receive personalized guidance and adaptive learning experiences."
+    }
+  ];
 
-            <div className="flex flex-col md:flex-row-reverse justify-between items-center">
-                <div className="md:w-1/2 mb-8 md:mb-0">
-                    <img src="/api/placeholder/400/300" alt="Interactive robot" className="w-full h-auto" />
-
-                </div>
-                <div className="md:w-1/2 md:pr-12">
-                    <h2 className="text-3xl font-bold mb-4">Learn at your level</h2>
-                    <p className="text-gray-600">
-                        Students and professionals alike can hone dormant skills or learn new ones. Progress
-                        through lessons and challenges tailored to your level. Designed for ages 13 to 113.
-                    </p>
-                </div>
-            </div>
+  return (
+    <div className="relative bg-blue-500 py-20 overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 0, 33% 100%, 66% 0)' }}></div>
+      <div className="max-w-6xl mx-auto px-4 py-16 relative z-10">
+        <h2 className="text-center text-4xl font-bold mb-12 text-white">
+          Experience the Power of Structify
+        </h2>
+        <p className="text-xl text-white text-center max-w-3xl mx-auto mb-16">
+          Structify is an Intelligent Tutoring System where you learn Data Structures and Algorithms through a gamified experience. Dive into a world of interactive learning, assessments, and analytics.
+        </p>
+        <div className="bg-white rounded-lg shadow-xl p-8">
+          <div className="grid md:grid-cols-2 gap-8">
+            {features.map((feature, index) => (
+              <FeatureItem key={index} {...feature} />
+            ))}
+          </div>
         </div>
-    );
+      </div>
+      <div className="absolute bottom-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 100%, 100% 100%, 100% 0, 66% 100%, 33% 0, 0 100%)' }}></div>
+    </div>
+  );
 };
 
 export default Features;

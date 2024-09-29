@@ -1,38 +1,128 @@
 import React from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const Reviews = () => {
+    const settings = {
+        dots: false,
+        infinite: true,
+        speed: 3000,
+        slidesToShow: 4,
+        slidesToScroll: 1,
+        autoplay: true,
+        autoplaySpeed: 0,
+        cssEase: 'linear',
+        pauseOnHover: true,
+        responsive: [
+            {
+                breakpoint: 1024,
+                settings: {
+                    slidesToShow: 3,
+                }
+            },
+            {
+                breakpoint: 768,
+                settings: {
+                    slidesToShow: 2,
+                }
+            },
+            {
+                breakpoint: 480,
+                settings: {
+                    slidesToShow: 1,
+                }
+            }
+        ]
+    };
+
+    const reviewItems = [
+        {
+            logo: "/google.svg",
+            company: "Google",
+            importance: "Efficiency",
+            quote: "Data structures are the backbone of our search algorithms."
+        },
+        {
+            logo: "/amazon.svg",
+            company: "Amazon",
+            importance: "Scalability",
+            quote: "Our recommendation system relies heavily on optimized data structures."
+        },
+        {
+            logo: "/spotify.svg",
+            company: "Spotify",
+            importance: "Organization",
+            quote: "Efficient playlists and music discovery powered by smart data structures."
+        },
+        {
+            logo: "/uber.svg",
+            company: "Uber",
+            importance: "Speed",
+            quote: "Real-time routing made possible through advanced data structures."
+        },
+        {
+            logo: "/insta.svg",
+            company: "Instagram",
+            importance: "Performance",
+            quote: "Billions of photos organized and served using optimized data structures."
+        },
+        {
+            logo: "/user.svg",
+            company: "Daily Life",
+            importance: "Productivity",
+            quote: "Organizing tasks and information efficiently improves daily productivity."
+        },
+        {
+            logo: "/education.svg",
+            company: "Education",
+            importance: "Understanding",
+            quote: "Mastering data structures is crucial for problem-solving skills."
+        },
+        {
+            logo: "/game.svg",
+            company: "Gaming",
+            importance: "Fun",
+            quote: "Learn data structures through engaging, interactive games!"
+        }
+    ];
+
     return (
-        <div className="mx-auto px-4 py-16 mt-8 text-center">
+        <div className="mx-auto px-4 py-16 mt-8 text-center bg-gray-100">
             <h2 className="text-3xl font-bold mb-12">
-                Join over 10 million people learning on Brilliant
+                Discover the Power of Data Structures in Tech and Daily Life
             </h2>
-            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-6">
-                <img src="/nytimes-logo.png" alt="The New York Times" className="h-6 opacity-50" />
-                <img src="/atlantic-logo.png" alt="The Atlantic" className="h-6 opacity-50" />
-                <div className="flex items-center">
-                    <span className="text-yellow-400 text-2xl mr-2">★★★★★</span>
-                    <span className="text-sm">
-                        Over 50,000 5-star reviews on<br />
-                        iOS App Store and Google Play
-                    </span>
-                </div>
-                <div className="flex items-center">
-                    <img src="/trustpilot-logo.png" alt="Trustpilot" className="h-6 mr-2" />
-                    <div className="flex flex-col items-start">
-                        <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                                <svg key={i} className="w-4 h-4 text-green-500 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                                </svg>
-                            ))}
+            <Slider {...settings}>
+                {reviewItems.map((item, index) => (
+                    <div key={index} className="px-4">
+                        <div className="bg-white rounded-lg shadow-lg p-6 h-64 flex flex-col justify-between">
+                            <div>
+                                <img src={item.logo} alt={item.company} className="h-12 mx-auto mb-4" />
+                                <h3 className="text-xl font-semibold mb-2">{item.company}</h3>
+                                <p className="text-blue-600 font-bold mb-2">{item.importance}</p>
+                            </div>
+                            <p className="text-sm italic">&quot;{item.quote}&quot;</p>
                         </div>
-                        <span className="text-xs">TrustScore 4.7 2,133 reviews</span>
+                    </div>
+                ))}
+            </Slider>
+            <div className="mt-12">
+                <p className="text-xl font-semibold mb-4">Join thousands learning data structures through play</p>
+                <div className="flex justify-center items-center space-x-4">
+                    <div className="flex items-center">
+                        <span className="text-yellow-400 text-2xl mr-2">★★★★★</span>
+                        <span className="text-sm">
+                            4.8/5 on App Store
+                        </span>
+                    </div>
+                    <div className="flex items-center">
+                        <span className="text-yellow-400 text-2xl mr-2">★★★★★</span>
+                        <span className="text-sm">
+                            4.9/5 on Google Play
+                        </span>
                     </div>
                 </div>
-                <img src="/app-store-badge.png" alt="Apple App Store App of the Day" className="h-10" />
-                <img src="/google-play-badge.png" alt="Google Play Store Best App" className="h-10" />
             </div>
-
         </div>
     );
 };
