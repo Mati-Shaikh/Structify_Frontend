@@ -40,7 +40,7 @@ const Features = () => {
 
   return (
     <div className="relative bg-blue-500 py-20 overflow-hidden">
-      <div className="absolute top-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 0, 33% 100%, 66% 0)' }}></div>
+      <div className="absolute top-0 left-0 right-0 h-8 bg-white" style={{ clipPath: 'polygon(0 , 100% 0, 100% 100%, 0 0, 33% 100%, 66% 0)' }}></div>
       <div className="max-w-6xl mx-auto px-4 py-16 relative z-10">
         <h2 className="text-center text-4xl font-bold mb-12 text-white">
           Experience the Power of Structify

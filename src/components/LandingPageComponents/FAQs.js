@@ -4,11 +4,11 @@ const FAQs = () => {
   const faqs = [
     {
       question: "What is Structify?",
-      answer: "Structify is an intelligent tutoring system designed to help users learn data structures in a gamified learning environment. It currently covers linked lists, queues, and stacks, with plans to expand to other data structures in the future."
+      answer: "Structify is an intelligent tutoring system designed to help users learn data structures in a gamified learning environment. It covers major data structures topics such as linked lists, queues, and stacks."
     },
     {
       question: "How does the learning process work on Structify?",
-      answer: "Structify uses interactive lessons, quizzes, and coding challenges to teach data structures. Users progress through different levels, earning points and badges as they master each concept. The system adapts to each user's learning pace and style."
+      answer: "Structify adapts to each user's learning pace and style and uses interactive lessons, quizzes, and coding challenges to teach data structures. Users progress through different levels, earning points and badges as they master each concept."
     },
     {
       question: "Is Structify suitable for beginners?",
@@ -16,11 +16,7 @@ const FAQs = () => {
     },
     {
       question: "Can I track my progress on Structify?",
-      answer: "Absolutely! Structify provides a personalized dashboard where you can see your progress, completed lessons, earned badges, and overall performance. You can also set learning goals and track your improvement over time."
-    },
-    {
-      question: "Are there any collaborative features on Structify?",
-      answer: "Yes, Structify offers collaborative features such as study groups, discussion forums, and peer code reviews. These features allow you to connect with other learners, share knowledge, and solve problems together."
+      answer: "Absolutely! Structify provides a personalized dashboard where you can see your progress, completed lessons, earned badges, and overall performance."
     }
   ];
 

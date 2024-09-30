@@ -19,8 +19,6 @@ const Footer = () => {
                         <h4 className="font-bold mb-2">Product</h4>
                         <ul className="space-y-2">
                             <li><a href="/" className="hover:text-gray-300">Courses</a></li>
-                            <li><a href="/" className="hover:text-gray-300">Pricing</a></li>
-                            <li><a href="/" className="hover:text-gray-300">Testimonials</a></li>
                             <li><a href="/" className="hover:text-gray-300">Help</a></li>
                         </ul>
                     </div>
@@ -28,13 +26,11 @@ const Footer = () => {
                         <h4 className="font-bold mb-2">Company</h4>
                         <ul className="space-y-2">
                             <li><a href="/" className="hover:text-gray-300">About us</a></li>
-                            <li><a href="/" className="hover:text-gray-300">Careers</a></li>
-                            <li><a href="/" className="hover:text-gray-300">Educators</a></li>
                         </ul>
                     </div>
                 </div>
                 <div className="mt-8 text-sm">
-                    <p>© 2024 Brilliant Worldwide, Inc. Brilliant and the Brilliant Logo are trademarks of Brilliant Worldwide, Inc.</p>
+                    <p>© 2024 Structify Worldwide, Inc. Structify and the Structify Logo are trademarks of Structify Worldwide, Inc.</p>
                     <div className="mt-2">
                         <a href="/" className="hover:text-gray-300 mr-4">Terms of service</a>
                         <a href="/" className="hover:text-gray-300 mr-4">Privacy policy</a>

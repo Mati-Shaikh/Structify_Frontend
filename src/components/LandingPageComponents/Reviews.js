@@ -66,24 +66,6 @@ const Reviews = () => {
             company: "Instagram",
             importance: "Performance",
             quote: "Billions of photos organized and served using optimized data structures."
-        },
-        {
-            logo: "/user.svg",
-            company: "Daily Life",
-            importance: "Productivity",
-            quote: "Organizing tasks and information efficiently improves daily productivity."
-        },
-        {
-            logo: "/education.svg",
-            company: "Education",
-            importance: "Understanding",
-            quote: "Mastering data structures is crucial for problem-solving skills."
-        },
-        {
-            logo: "/game.svg",
-            company: "Gaming",
-            importance: "Fun",
-            quote: "Learn data structures through engaging, interactive games!"
         }
     ];
 

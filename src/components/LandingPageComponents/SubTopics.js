@@ -5,10 +5,10 @@ const categories = ['Linked Lists', 'Queues', 'Stacks'];
 
 const courses = {
   'Linked Lists': [
-    { icon: <List size={20} />, name: 'Introduction to Linked Lists' },
-    { icon: <List size={20} />, name: 'Singly vs Doubly Linked Lists' },
-    { icon: <List size={20} />, name: 'Inserting and Deleting Nodes' },
-    { icon: <List size={20} />, name: 'Traversing a Linked List' },
+    { icon: <List size={20} />, name: 'Insertion in a Linked List' },
+    { icon: <List size={20} />, name: 'Traversal in a Linked List' },
+    { icon: <List size={20} />, name: 'Deletion in a Linked List' },
+    { icon: <List size={20} />, name: 'Sorting a Linked List' },
     { icon: <List size={20} />, name: 'Reversing a Linked List' },
   ],
   'Queues': [
@@ -30,9 +30,9 @@ const courses = {
 const questions = {
   'Linked Lists': [
     {
-      question: "What is the time complexity of inserting an element at the beginning of a singly linked list?",
-      options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"],
-      correct: "O(1)",
+      question: "In a singly linked list, each node contains:",
+      options: ["Data only", "Data and two pointers", "Data and a pointer to the next node", "Data and a pointer to the previous node"],
+      correct: "Data and a pointer to the next node",
     },
   ],
   'Queues': [
@@ -63,7 +63,7 @@ const SubTopics = () => {
     } else if (userAnswer === '') {
       setFeedback("Please select an answer.");
     } else {
-      setFeedback("Not quite. Try again!");
+      setFeedback("Hard luck. Try again!");
     }
   };
 
@@ -90,7 +90,7 @@ const SubTopics = () => {
 
       <div className="flex">
         <div className="w-1/3 pr-8">
-          <h3 className="text-xl font-bold mb-4">Courses in {selectedCategory}</h3>
+          <h3 className="text-xl font-bold mb-4">Topics in {selectedCategory}</h3>
           <ul>
             {courses[selectedCategory]?.map((course, index) => (
               <li key={index} className="flex items-center mb-4">
