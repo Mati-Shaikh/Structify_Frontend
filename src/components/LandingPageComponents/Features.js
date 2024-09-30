@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, GamepadIcon, BarChart, Award, Brain } from 'lucide-react';
+import { GamepadIcon, BarChart, Award, Brain } from 'lucide-react';
 
 const FeatureItem = ({ Icon, title, description }) => (
   <div className="flex items-start mb-8">
@@ -18,28 +18,24 @@ const Features = () => {
     {
       Icon: GamepadIcon,
       title: "Gamified Learning",
-      description: "Master DSA concepts through engaging games and interactive challenges."
+      description: "Master Data structures concepts through engaging games and interactive challenges."
     },
     {
-      Icon: BookOpen,
-      title: "Comprehensive Curriculum",
-      description: "Cover all essential DSA topics with our expertly crafted learning path."
+      Icon: Brain,
+      title: "Adaptive Learning",
+      description: "Receive personalized guidance and adaptive learning experiences."
     },
-    {
-      Icon: BarChart,
-      title: "Performance Analytics",
-      description: "Track your progress with detailed analytics and personalized insights."
-    },
+   
     {
       Icon: Award,
       title: "Assessments & Quizzes",
       description: "Reinforce your learning with regular assessments and fun quizzes."
     },
     {
-      Icon: Brain,
-      title: "Intelligent Tutoring",
-      description: "Receive personalized guidance and adaptive learning experiences."
-    }
+      Icon: BarChart,
+      title: "Performance Analytics",
+      description: "Track your progress with detailed analytics and personalized insights."
+    },
   ];
 
   return (
@@ -50,7 +46,7 @@ const Features = () => {
           Experience the Power of Structify
         </h2>
         <p className="text-xl text-white text-center max-w-3xl mx-auto mb-16">
-          Structify is an Intelligent Tutoring System where you learn Data Structures and Algorithms through a gamified experience. Dive into a world of interactive learning, assessments, and analytics.
+          Structify is an Intelligent Tutoring System where you learn Data Structures through a gamified experience. Dive into a world of interactive learning, assessments, and analytics.
         </p>
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="grid md:grid-cols-2 gap-8">

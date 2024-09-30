@@ -107,7 +107,7 @@ const Reviews = () => {
                 ))}
             </Slider>
             <div className="mt-12">
-                <p className="text-xl font-semibold mb-4">Join thousands learning data structures through play</p>
+                <p className="text-xl font-semibold mb-4">Join thousands learning data structures on Structify</p>
                 <div className="flex justify-center items-center space-x-4">
                     <div className="flex items-center">
                         <span className="text-yellow-400 text-2xl mr-2">★★★★★</span>

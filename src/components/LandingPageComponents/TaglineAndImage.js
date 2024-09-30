@@ -16,7 +16,7 @@ const TaglineAndImage = () => {
                     animate="visible"
                     variants={textVariants}
                 >
-                    Learn by <span className="text-blue-500">Playing Games</span>
+                    Learn <span className="text-blue-500">Data Structures</span>
                 </motion.h2>
                 <motion.p 
                     className="text-xl mb-6"
@@ -25,7 +25,7 @@ const TaglineAndImage = () => {
                     variants={textVariants}
                     transition={{ delay: 0.2 }}
                 >
-                    Intelligent Tutoring System for Learning Data Structures in a personalized learning environment through gamified way.
+                    Intelligent Tutoring System for Learning Data Structures in a personalized learning environment through gamification.
                 </motion.p>
                 <motion.button 
                     className="bg-green-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600"

@@ -12,9 +12,8 @@ import Benefits from '../LandingPageComponents/Benefits'
 
 const LandingPage = () => {
     return (
-        <>
+        <div>
             <Header />
-
             <TaglineAndImage />
             <Topics />
             <Reviews />
@@ -23,9 +22,8 @@ const LandingPage = () => {
             <FAQs/>
             <Benefits/>
             <BlogsAndArticles/>
-
             <Footer />
-        </>
+        </div>
     );
 };
 
