@@ -153,7 +153,7 @@ const SignupPage = () => {
           </p>
           <div className="mt-6 text-center text-sm">
             Existing user?{' '}
-            <a href="/signup" className="text-blue-500 hover:underline">Sign in</a>
+            <a href="/login" className="text-blue-500 hover:underline">Sign in</a>
           </div>
         </div>
       </div>

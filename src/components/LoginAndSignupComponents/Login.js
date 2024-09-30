@@ -105,7 +105,7 @@ const LoginPage = () => {
           </button>
         </form>
         <div className="mt-6 text-center text-sm">
-          <a href="/" className="text-blue-500 hover:underline">Reset password</a>
+          <a href="/resetPassword" className="text-blue-500 hover:underline">Reset password</a>
           <span className="mx-2 text-gray-500">•</span>
           <a href="/signup" className="text-blue-500 hover:underline">New user? Sign up</a>
         </div>
