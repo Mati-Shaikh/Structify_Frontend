@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../../../public/game/fonts/myfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  .custom-font {
+    font-family: 'MyCustomFont', sans-serif;
+  }
+  
