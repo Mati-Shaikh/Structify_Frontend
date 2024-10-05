@@ -29,7 +29,7 @@ const GamifiedExperience = () => {
   const content = [
     {
       title: "CLASSROOM MANAGEMENT",
-      description: "Equipped with student solutions, automatic grading and curriculum management, Structify's Classroom Dashboard allows you to effortlessly manage your students. Fully-detailed coding lessons will help you more easily conduct your classes through engaging activities as well as monitor student progress.",
+      description: "Equipped with student, automatic grading and curriculum management, Structify's Classroom Dashboard allows you to effortlessly manage your students. Fully-detailed coding lessons will help you more easily conduct your classes through engaging activities as well as monitor student progress.",
       imageSrc: "/classroom.svg",
       imageAlt: "Classroom management dashboard"
     },
