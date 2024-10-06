@@ -1,227 +1,253 @@
-
 export function level1(k) {
-  k.loadMusic("bgMusic", "/game/sound/bgMusic1.ogg");
   const music = k.play("bgMusic");
-  music.value = 0.8;
+  music.value = 0.05;
   music.loop = true;
-  // Train game variables
-  let bogies = [
-    { x: 550, y: 410, value: 3 },
-    { x: 700, y: 440, value: 5 },
-    { x: 840, y: 440, value: 2 }
-  ];
-  let newBogie = { x: 50, y: 550, value: null };
-  let chainPosition = { x: 840, y: 620 };
-  let gameState = "SELECT_NUMBER";
-  let score = 0;
 
-  function drawBogies() {
-    bogies.forEach((bogie, index) => {
-      if(index===0){
-        k.drawSprite({
-          sprite: "head",           
-          pos: k.vec2(bogie.x, bogie.y), 
-          scale: 0.1,                      
-          origin: "center",             
-        });
-        k.drawSprite({
-          sprite: 'chain',
-          pos: k.vec2(bogie.x+ 97, bogie.y+ 27),
-          scale: 0.05,
-          origin: 'center'
-        });
-        k.drawText({
-          text: bogie.value.toString(),
-          pos: k.vec2(bogie.x + 37, bogie.y-30),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-      }else {
-        k.drawSprite({
-          sprite: "boggy",           
-          pos: k.vec2(bogie.x-5, bogie.y), 
-          scale: 0.1,                      
-          origin: "center",             
-        });
-        if(index<bogies.length-1) {
-        k.drawSprite({
-          sprite: 'chain',
-          pos: k.vec2(bogie.x+86, bogie.y-3),
-          scale: 0.05,
-          origin: 'center'
-        });
+  k.scene("level1", () => {
+
+    // Train game variables
+    let bogies = [
+      { x: 550, y: 410, value: 3 },
+      { x: 700, y: 440, value: 5 },
+      { x: 840, y: 440, value: 2 }
+    ];
+    let newBogie = { x: 50, y: 550, value: null };
+    let chainPosition = { x: 840, y: 620 };
+    let gameState = "SELECT_NUMBER";
+    let score = 0;
+
+    function drawBogies() {
+      bogies.forEach((bogie, index) => {
+        if (index === 0) {
+          k.drawSprite({
+            sprite: "head",
+            pos: k.vec2(bogie.x, bogie.y),
+            scale: 0.1,
+            origin: "center",
+          });
+          k.drawSprite({
+            sprite: 'chain',
+            pos: k.vec2(bogie.x + 97, bogie.y + 27),
+            scale: 0.05,
+            origin: 'center'
+          });
+          k.drawText({
+            text: bogie.value.toString(),
+            pos: k.vec2(bogie.x + 37, bogie.y - 30),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+        } else {
+          k.drawSprite({
+            sprite: "boggy",
+            pos: k.vec2(bogie.x - 5, bogie.y),
+            scale: 0.1,
+            origin: "center",
+          });
+          if (index < bogies.length - 1) {
+            k.drawSprite({
+              sprite: 'chain',
+              pos: k.vec2(bogie.x + 86, bogie.y - 3),
+              scale: 0.05,
+              origin: 'center'
+            });
+          }
+          k.drawText({
+            text: bogie.value.toString(),
+            pos: k.vec2(bogie.x + 30, bogie.y - 30),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
         }
+
+      });
+    }
+
+    function drawNewBogie() {
+      k.drawSprite({
+        sprite: 'boggy',
+        pos: k.vec2(newBogie.x, newBogie.y),
+        scale: 0.1,
+        origin: 'center'
+      });
+      if (newBogie.value !== null) {
         k.drawText({
-          text: bogie.value.toString(),
-          pos: k.vec2(bogie.x + 30, bogie.y-30),
+          text: newBogie.value.toString(),
+          pos: k.vec2(newBogie.x + 40, newBogie.y - 30),
           color: k.rgb(0, 0, 0),
           size: 24,
           font: "myFont",
           origin: "center",
         });
       }
-      
-    });
-  }
-
-  function drawNewBogie() {
-    k.drawSprite({
-      sprite: 'boggy',
-      pos: k.vec2(newBogie.x, newBogie.y),
-      scale: 0.1,
-      origin: 'center'
-    });
-    if (newBogie.value !== null) {
-      k.drawText({
-        text: newBogie.value.toString(),
-        pos: k.vec2(newBogie.x + 40, newBogie.y-30),
-        color: k.rgb(0, 0, 0),
-        size: 24,
-        font: "myFont",
-        origin: "center",
-      });
     }
-  }
 
-  function drawChain() {         
-    if (gameState === "LINK") {
+    function drawChain() {
+      if (gameState === "LINK") {
+        k.drawSprite({
+          sprite: 'chain',
+          pos: k.vec2(chainPosition.x, chainPosition.y),
+          scale: 0.05,
+          origin: 'center'
+        });
+      }
+    }
+
+    function drawInstructions() {
+
+      switch (gameState) {
+        case "SELECT_NUMBER":
+          k.drawText({
+            text: "Enter a Number",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "For your Boggy !",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "MOVE_BOGIE":
+          k.drawText({
+            text: "Use Arrow Keys to",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "Move your Boggy!",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "Place it at the front!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "BEFORELINK":
+          k.drawText({
+            text: "A chain will appear",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "from the portal",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "at the bottom!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "LINK":
+          k.drawText({
+            text: "Drag the chain",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "At the end of new boggy",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "To link the new Boggy!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "ATTACHED":
+          k.drawText({
+            text: "BRAVO!",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "The boggy is attached",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "on the front.",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        default:
+          k.drawText({
+            text: "Enter a Number",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "For your Boggy !",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+      }
       k.drawSprite({
-        sprite: 'chain',
-        pos: k.vec2(chainPosition.x, chainPosition.y),
-        scale: 0.05,
+        sprite: 'burp',
+        pos: k.vec2(15, 150),
+        scale: 1,
         origin: 'center'
       });
     }
-  }
 
-  function drawInstructions() {
-    
-    switch (gameState) {
-      case "SELECT_NUMBER":
-        k.drawText({
-          text: "Enter a Number",
-          pos: k.vec2(130, 160),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "For your Boggy !",
-          pos: k.vec2(130, 200),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        break;
-      case "MOVE_BOGIE":
-        k.drawText({
-          text: "Use Arrow Keys to",
-          pos: k.vec2(130, 160),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "Move your Boggy!",
-          pos: k.vec2(130, 200),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "Place it at the front!",
-          pos: k.vec2(130, 240),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        break;
-      case "LINK":
-        k.drawText({
-          text: "Drag the chain",
-          pos: k.vec2(130, 160),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "At the end of new boggy",
-          pos: k.vec2(130, 200),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "To link the new Boggy!",
-          pos: k.vec2(130, 240),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        break;
-        case "ATTACHED":
-        k.drawText({
-          text: "BRAVO!",
-          pos: k.vec2(130, 160),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "The boggy is attached",
-          pos: k.vec2(130, 200),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "on the front.",
-          pos: k.vec2(130, 240),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        break;
-        default: 
-        k.drawText({
-          text: "Enter a Number",
-          pos: k.vec2(130, 160),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-        k.drawText({
-          text: "For your Boggy !",
-          pos: k.vec2(130, 200),
-          color: k.rgb(0, 0, 0),
-          size: 24,
-          font: "myFont",
-          origin: "center",
-        });
-    }
-    k.drawSprite({
-      sprite: 'burp',
-      pos: k.vec2(15, 150),
-      scale: 1,
-      origin: 'center'
-    });
-  }
-
-  k.scene("level1", () => {
     k.onUpdate(() => {
       if (gameState === "MOVE_BOGIE") {
         let moveX = 0;
@@ -263,37 +289,49 @@ export function level1(k) {
         }
 
         if (
-          Math.abs(newBogie.x - (bogies[0].x - 138)) < 10 &&  
-          Math.abs(newBogie.y - (bogies[0].y + 30)) < 10       
+          Math.abs(newBogie.x - (bogies[0].x - 138)) < 10 &&
+          Math.abs(newBogie.y - (bogies[0].y + 30)) < 10
         ) {
-          gameState = "LINK";
-          chainPosition = { x: 840, y: 620 };
+          k.play("link", { volume: 1.4 });
+          gameState = "BEFORELINK";
+          setTimeout(() => {
+            k.play("appear", { volume: 1.4 });
+            gameState = "LINK";
+            chainPosition = { x: 840, y: 620 };
+          }, 2000);
+
         }
       }
 
       if (gameState === "LINK") {
         if (k.isMouseDown()) {
           chainPosition = k.mousePos();
-          
+
           if (
-            Math.abs(chainPosition.x - (newBogie.x + 80)) < 10 &&  
-            Math.abs(chainPosition.y - newBogie.y) < 10           
+            Math.abs(chainPosition.x - (newBogie.x + 80)) < 10 &&
+            Math.abs(chainPosition.y - newBogie.y) < 10
           ) {
             bogies.unshift({ x: newBogie.x, y: bogies[0].y, value: newBogie.value });
-            bogies[1].y= 440
-            bogies[1].x+=6
+            bogies[1].y = 440
+            bogies[1].x += 6
             newBogie = { x: 50, y: 550, value: null };
-            score+=10;
+            k.play("goalSound", { volume: 0.7 });
             gameState = "ATTACHED";
-            k.play("goalSound", { volume: 0.8 });
             setTimeout(() => {
-              if(score===30){
+              score += 10;
+              k.play("attached", { volume: 0.8 });
+            }, 500);
+
+
+            setTimeout(() => {
+              if (score === 30) {
+                k.play("completed", { volume: 0.8 });
                 k.go('end')
               }
               gameState = "SELECT_NUMBER";
             }, 2000);
-            
-            
+
+
           }
         }
       }
@@ -327,17 +365,17 @@ export function level1(k) {
         size: 28,
       });
       k.drawSprite({
-          sprite: "cloud",           
-          pos: k.vec2(190, 50), 
-          scale: 1,                      
-          origin: "center",             
-        });
-        k.drawSprite({
-          sprite: "cloud",           
-          pos: k.vec2(710, 50), 
-          scale: 1,                      
-          origin: "center",             
-        });
+        sprite: "cloud",
+        pos: k.vec2(190, 50),
+        scale: 1,
+        origin: "center",
+      });
+      k.drawSprite({
+        sprite: "cloud",
+        pos: k.vec2(710, 50),
+        scale: 1,
+        origin: "center",
+      });
       k.drawSprite({
         sprite: 'coin',
         pos: k.vec2(k.width() - 130, 150),
@@ -358,8 +396,6 @@ export function level1(k) {
         origin: 'center'
       });
 
-      
-
       if (gameState === "SELECT_NUMBER") {
         for (let i = 1; i <= 5; i++) {
           k.drawText({
@@ -373,12 +409,12 @@ export function level1(k) {
       }
     });
 
-    k.onKeyPress("1", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 1; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("2", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 2; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("3", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 3; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("4", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 4; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("5", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 5; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("6", () => { if (gameState === "SELECT_NUMBER") { newBogie.value = 6; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("1", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 1; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("2", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 2; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("3", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 3; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("4", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 4; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("5", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 5; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("6", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 6; gameState = "MOVE_BOGIE"; } });
   });
 
   k.go("level1");

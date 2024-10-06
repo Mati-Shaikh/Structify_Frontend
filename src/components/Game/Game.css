@@ -9,3 +9,10 @@
     font-family: 'MyCustomFont', sans-serif;
   }
   
+#game-container {
+    cursor: url('../../../public/game/sprites/cursor.png'), auto; 
+}
+
+#start:hover {
+    cursor: url('../../../public/game/sprites/pointer.png'), auto; 
+}

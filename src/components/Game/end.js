@@ -1,4 +1,3 @@
-import { level2 } from "./level2";
 export function end(k) {
     return k.scene("end", () => {
       k.add([
@@ -14,7 +13,7 @@ export function end(k) {
       ]);
   
       k.onKeyPress("enter", () => {
-        level2(k)
+        k.go('level2')
       });
     });
   }
