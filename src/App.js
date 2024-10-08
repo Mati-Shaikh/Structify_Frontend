@@ -7,6 +7,7 @@ import LandingPage from './components/LandingPage/LangingPage';
 import Dashboard from './components/Dashboard/dashboard';
 import HomePage from './components/Home/home';
 import Game from './components/Game/Game';
+import ProfileManagement from './components/Profile/profile';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/profile" element={<ProfileManagement />} />
       </Routes>
     </Router>
   );
