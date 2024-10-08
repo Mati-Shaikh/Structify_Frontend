@@ -4,6 +4,9 @@ import LoginPage from './components/LoginAndSignupComponents/Login';
 import SignupPage from './components/LoginAndSignupComponents/Signup';
 import ResetPassword from './components/LoginAndSignupComponents/ResetPassword';
 import LandingPage from './components/LandingPage/LangingPage';
+import Dashboard from './components/Dashboard/dashboard';
+import HomePage from './components/Home/home';
+import Game from './components/Game/Game';
 
 const App = () => {
   return (
