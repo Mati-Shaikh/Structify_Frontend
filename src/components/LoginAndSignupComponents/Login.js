@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
-import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaGoogle, FaFacebook, FaApple } from "react-icons/fa";
+import { initializeApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -11,7 +11,7 @@ const firebaseConfig = {
   projectId: "authentication-51789",
   storageBucket: "authentication-51789.appspot.com",
   messagingSenderId: "921096435188",
-  appId: "1:921096435188:web:12c9a200a2374035eb35a1"
+  appId: "1:921096435188:web:12c9a200a2374035eb35a1",
 };
 
 // Initialize Firebase
@@ -20,16 +20,16 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     const loginData = {
       Email: email,
@@ -37,24 +37,23 @@ const LoginPage = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:3005/api/auth/login', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3005/api/auth/login", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(loginData),
       });
 
       if (!response.ok) {
-        throw new Error('Login failed. Please check your credentials.');
+        throw new Error("Login failed. Please check your credentials.");
       }
 
       const responseData = await response.json();
-      localStorage.setItem('token', responseData.token);  // Store JWT token
-      localStorage.setItem('userId', responseData.user._id);  // Store user ID
-      localStorage.setItem('userFullName', responseData.user.FullName);  // Store full name
-      navigate('/home')
-
+      localStorage.setItem("token", responseData.token); // Store JWT token
+      localStorage.setItem("userId", responseData.user._id); // Store user ID
+      localStorage.setItem("userFullName", responseData.user.FullName); // Store full name
+      navigate("/home");
     } catch (err) {
       setError(err.message);
     } finally {
@@ -64,24 +63,23 @@ const LoginPage = () => {
 
   const handleGoogleLogin = async () => {
     try {
-        const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
 
-        // Access the user information from the result object
-        const user = result.user;
+      // Access the user information from the result object
+      const user = result.user;
 
-        // Log the user object to the console to see its structure and data
-        console.log('Google Login successful:', user);
+      // Log the user object to the console to see its structure and data
+      console.log("Google Login successful:", user);
 
-        // Storing the user in localStorage (optional for user persistence)
-        localStorage.setItem('user', JSON.stringify(user));
-        // Redirect to dashboard
-        navigate('/home');
+      // Storing the user in localStorage (optional for user persistence)
+      localStorage.setItem("user", JSON.stringify(user));
+      // Redirect to dashboard
+      navigate("/home");
     } catch (err) {
-        setError('Google Login failed. Please try again.');
-        console.error('Google Login Error:', err);  // Log any errors that might occur during the process
+      setError("Google Login failed. Please try again.");
+      console.error("Google Login Error:", err); // Log any errors that might occur during the process
     }
-};
-
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -89,7 +87,9 @@ const LoginPage = () => {
         <div className="flex justify-center mb-6">
           <img src="/logo.png" alt="Logo" className="w-32 h-32" />
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Login
+        </h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="flex justify-center space-x-4 mb-6">
           <button
@@ -136,16 +136,22 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Log in'}
+            {loading ? "Logging in..." : "Log in"}
           </button>
         </form>
         <div className="mt-6 text-center text-sm">
-          <a href="/reset-password" className="text-blue-500 hover:underline">Reset password</a>
+          <a href="/resetpassword" className="text-blue-500 hover:underline">
+            Reset password
+          </a>
           <span className="mx-2 text-gray-500">•</span>
-          <a href="/signup" className="text-blue-500 hover:underline">New user? Sign up</a>
+          <a href="/signup" className="text-blue-500 hover:underline">
+            New user? Sign up
+          </a>
         </div>
       </div>
     </div>
