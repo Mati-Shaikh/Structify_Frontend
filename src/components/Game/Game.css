@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('../../../public/game/fonts/myfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  .custom-font {
+    font-family: 'MyCustomFont', sans-serif;
+  }
+  
+#game-container {
+    cursor: url('../../../public/game/sprites/cursor.png'), auto; 
+}
+
+#start:hover {
+    cursor: url('../../../public/game/sprites/pointer.png'), auto; 
+}
