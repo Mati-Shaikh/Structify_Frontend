@@ -49,13 +49,12 @@ const LoginPage = () => {
         throw new Error('Login failed. Please check your credentials.');
       }
 
-      const data = await response.json();
-      console.log('Login successful:', data);
+      const responseData = await response.json();
+      localStorage.setItem('token', responseData.token);  // Store JWT token
+      localStorage.setItem('userId', responseData.user._id);  // Store user ID
+      localStorage.setItem('userFullName', responseData.user.FullName);  // Store full name
+      navigate('/home')
 
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token);
-
-      navigate('/dashboard');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -75,9 +74,8 @@ const LoginPage = () => {
 
         // Storing the user in localStorage (optional for user persistence)
         localStorage.setItem('user', JSON.stringify(user));
-
         // Redirect to dashboard
-        navigate('/dashboard');
+        navigate('/home');
     } catch (err) {
         setError('Google Login failed. Please try again.');
         console.error('Google Login Error:', err);  // Log any errors that might occur during the process

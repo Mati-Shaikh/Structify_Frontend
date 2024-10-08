@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { FaGoogle, FaFacebook } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const SignupPage = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +10,7 @@ const SignupPage = () => {
   const [age, setAge] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +37,10 @@ const SignupPage = () => {
         setSuccess(false);
       } else {
         const responseData = await response.json();
-        console.log('Signup success:', responseData);
+        localStorage.setItem('token', responseData.token);  // Store JWT token
+        localStorage.setItem('userId', responseData.user._id);  // Store user ID
+        localStorage.setItem('userFullName', responseData.user.FullName);  // Store full name
+        navigate('/home')
         setError(null);
         setSuccess(true);
       }
@@ -142,7 +147,7 @@ const SignupPage = () => {
           {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
           {success && (
             <p className="mt-4 text-green-500 text-center">
-              Signup successful! You can now log in.
+              Signup successful!
             </p>
           )}
 
