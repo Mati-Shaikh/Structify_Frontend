@@ -80,7 +80,7 @@ const Reviews = () => {
       </h2>
       <Slider {...settings}>
         {reviewItems.map((item, index) => (
-          <div key={index} className="px-4">
+          <div key={index} className="px-4 py-4">
             <div className="bg-white rounded-lg shadow-lg p-6 h-64 flex flex-col justify-between">
               <div>
                 <img

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 
 const BlogsAndArticles = () => {
+  const navigate = useNavigate();
 
   return (
     <div className="relative py-16 overflow-hidden">
@@ -13,7 +15,7 @@ const BlogsAndArticles = () => {
         <h1 className="text-5xl font-bold">Unlock the next level in</h1>  
         <h1 className="text-5xl font-bold mb-10">learning data structures!</h1>  
 
-          <button className="bg-green-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition duration-300">
+          <button onClick={() => navigate('/home')} className="bg-green-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600 transition duration-300">
             Get Started Now
           </button>
         </div>

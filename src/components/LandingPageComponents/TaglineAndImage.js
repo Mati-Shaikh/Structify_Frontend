@@ -2,12 +2,14 @@ import React from "react";
 import { motion } from "framer-motion";
 import Lottie from "react-lottie";
 import animationData from "../../animation.json";
+import { useNavigate } from "react-router-dom";
 
 const TaglineAndImage = () => {
   const textVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   };
+  const navigate = useNavigate();
 
   const defaultOptions = {
     loop: true,
@@ -47,6 +49,7 @@ const TaglineAndImage = () => {
           transition={{ delay: 0.4 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/home')}
         >
           Get started
         </motion.button>
