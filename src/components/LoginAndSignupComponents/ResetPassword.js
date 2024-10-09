@@ -88,7 +88,7 @@ const PasswordReset = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex p-4 border-b justify-between items-center px-16">
-        <h1 className="text-2xl font-bold">Structify</h1>
+      <a href= "/" style={{ fontFamily: 'Atma, sans-serif' }} className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600">Structify</a>
         <a href="/login" className="px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-100">Log in</a>
       </header>
 

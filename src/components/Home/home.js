@@ -143,7 +143,7 @@ const HomePage = () => {
     return (
         <div className="min-h-screen">
             <Navbar />
-            <div className="container mx-auto px-32 py-16">
+            <div className="container mx-auto px-32 pb-16">
                 <motion.div
                     className="text-center mb-16"
                 >

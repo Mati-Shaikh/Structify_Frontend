@@ -21,7 +21,7 @@ const TaglineAndImage = () => {
   };
 
   return (
-    <main className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
+    <main className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between mt-16">
       <div className="md:w-1/2 mb-8 md:mb-0">
         <motion.h2
           className="text-5xl font-bold mb-4"
