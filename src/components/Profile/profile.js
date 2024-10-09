@@ -228,8 +228,7 @@ const PersonalInfoPage = () => {
                 Update
               </button>
               <p className="ml-4 text-sm text-gray-600">
-                By clicking "Update personal info", I acknowledge that all <br />
-                information submitted above is factually correct.
+              By clicking 'Update', you're submitting the information entered above.
               </p>
             </div>
           </form>
