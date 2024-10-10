@@ -6,18 +6,20 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 // Your Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAVg2o6XAUE05cIl5s09KhLfxMNH56aeKE",
-  authDomain: "authentication-51789.firebaseapp.com",
-  projectId: "authentication-51789",
-  storageBucket: "authentication-51789.appspot.com",
-  messagingSenderId: "921096435188",
-  appId: "1:921096435188:web:12c9a200a2374035eb35a1",
+  apiKey: "AIzaSyCoCI4vGc_7PqsRFVidHfmeB2_cj6akdTg",
+  authDomain: "structify-58b2d.firebaseapp.com",
+  projectId: "structify-58b2d",
+  storageBucket: "structify-58b2d.appspot.com",
+  messagingSenderId: "1034001727761",
+  appId: "1:1034001727761:web:614b860140b0701c724cb0",
+  measurementId: "G-NTDV5SD72E"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -53,7 +55,7 @@ const LoginPage = () => {
       localStorage.setItem("token", responseData.token); // Store JWT token
       localStorage.setItem("userId", responseData.user._id); // Store user ID
       localStorage.setItem("userFullName", responseData.user.FullName); // Store full name
-      navigate("/home");
+      navigate("/home")
     } catch (err) {
       setError(err.message);
     } finally {
@@ -61,23 +63,36 @@ const LoginPage = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleAuth = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
 
-      // Access the user information from the result object
       const user = result.user;
+      // Send the Google user data to your backend
+      const response = await fetch("http://localhost:3005/api/auth/google", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: user.email,
+          name: user.displayName,
+          googleId: user.uid,
+        }),
+      });
 
-      // Log the user object to the console to see its structure and data
-      console.log("Google Login successful:", user);
+      if (!response.ok) {
+        throw new Error("Google authentication failed");
+      }
 
-      // Storing the user in localStorage (optional for user persistence)
-      localStorage.setItem("user", JSON.stringify(user));
-      // Redirect to dashboard
-      navigate("/home");
+      const responseData = await response.json();
+      localStorage.setItem("token", responseData.token);
+      localStorage.setItem("userId", responseData.user._id);
+      localStorage.setItem("userFullName", responseData.user.FullName);
+      navigate("/home")
+
     } catch (err) {
-      setError("Google Login failed. Please try again.");
-      console.error("Google Login Error:", err); // Log any errors that might occur during the process
+      setError(err.message);
     }
   };
 
@@ -93,7 +108,7 @@ const LoginPage = () => {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <div className="flex justify-center space-x-4 mb-6">
           <button
-            onClick={handleGoogleLogin}
+            onClick={handleGoogleAuth}
             className="w-12 h-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-100 transition-colors"
           >
             <FaGoogle className="text-red-500" size={20} />
