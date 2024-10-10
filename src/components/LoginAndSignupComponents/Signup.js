@@ -128,7 +128,7 @@ const SignupPage = () => {
                     placeholder="Age"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     value={age}
-                    onChange={(e) => setAge(e.target.value)}
+                    onChange={(e) => setAge(Math.max(10, e.target.value))}
                     required
                   />
                   <span className="absolute right-3 top-2 text-gray-400 cursor-pointer">?</span>
