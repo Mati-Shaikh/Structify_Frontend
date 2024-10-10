@@ -42,7 +42,7 @@ export default function main() {
   k.loadSound("link", "/game/sound/link.wav");
   k.loadSound("attached", "/game/sound/attached.wav");
   k.loadSound("appear", "/game/sound/appear.wav");
-  k.loadMusic("bgMusic", "/game/sound/bgMusic1.ogg");
+  k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
 
   const setCustomCursor = (cursorPath) => {
     const canvas = k.canvas;
