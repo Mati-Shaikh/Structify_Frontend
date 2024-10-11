@@ -39,27 +39,46 @@ const SignupPage = () => {
     setSuccess(null)
     e.preventDefault();
 
+
     if (step === 1) {
+
       try {
-        setSuccess('Wait for a few seconds...');
-        const response = await fetch('http://localhost:3005/api/auth/verifyEmail', {
+        const response = await fetch('http://localhost:3005/api/auth/duplicateUser', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ Email: email }),
         });
-        if (response.ok) {
-          setSuccess('A PIN has been sent to your email. Please check and enter it above.');
-          const data = await response.json();
-          setReturnedPin(data.pin)
-          setStep(2);
+        if (!response.ok) {
+          setStep(1);
+          setError("User already exists. Please Login")
         } else {
-          if (response.status === 401) {
-            setError('Error sending email. Please try again later.');
+          try {
+            setSuccess('Wait for a few seconds...');
+            const response = await fetch('http://localhost:3005/api/auth/verifyEmail', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ Email: email }),
+            });
+            if (response.ok) {
+              setSuccess('A PIN has been sent to your email. Please check and enter it above.');
+              const data = await response.json();
+              setReturnedPin(data.pin)
+              setStep(2);
+            } else {
+              if (response.status === 401) {
+                setError('Error sending email. Please try again later.');
+              }
+            }
+          } catch (err) {
+            setError('An error occurred. Please try again.');
           }
         }
+        
       } catch (err) {
         setError('An error occurred. Please try again.');
       }
+
+      
     } else if (step === 2) {
       const pinString = pin.join('');
       if (pinString === String(returnedPin)) {
@@ -103,7 +122,7 @@ const SignupPage = () => {
           setSuccess(false);
         }
       } else {
-        setError("Email Verification failed")
+        setError("Email Verification Failed")
         setPin(['', '', '', '', ''])
         setSuccess(null)
         setStep(1)
