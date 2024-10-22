@@ -1,5 +1,5 @@
 export function end(k) {
-    return k.scene("end", () => {
+    return k.scene("end", ({ nextLevel }) => {
       k.add([
         k.text("You Win!", { size: 64, font: "myfont" }),
         k.pos(k.width()/2, 720 / 2 - 100),
@@ -13,7 +13,7 @@ export function end(k) {
       ]);
   
       k.onKeyPress("enter", () => {
-        k.go('level2')
+        k.go(nextLevel)
       });
     });
   }

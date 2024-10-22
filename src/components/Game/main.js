@@ -3,6 +3,7 @@ import "kaplay/global";
 import { end } from "./end";
 import { level1 } from "./level1";
 import { level2 } from "./level2";
+import { level3 } from "./level3";
 
 export default function main() {
   const k = kaplay({
@@ -25,6 +26,7 @@ export default function main() {
   k.loadSprite("cloud", "/game/sprites/cloud.png");
   k.loadSprite("chain", "/game/sprites/chain.png");
   k.loadSprite("chain2", "/game/sprites/chain2.png");
+  k.loadSprite("chain3", "/game/sprites/chain3.png");
   k.loadSprite("portal", "/game/sprites/portal.png");
   k.loadSprite("cursor", "/game/sprites/cursor.png");
   k.loadSprite("pointer", "/game/sprites/pointer.png");
@@ -33,6 +35,7 @@ export default function main() {
   k.loadSprite("kaboom", "/game/sprites/kaboom.png");
   k.loadSprite("background", "/game/sprites/hills3.png");
   k.loadSprite("background2", "/game/sprites/hills2.png");
+  k.loadSprite("background3", "/game/sprites/hills4.png");
 
   //Loading sounds
   k.loadSound("goalSound", "/game/sound/coin.wav");
@@ -43,6 +46,8 @@ export default function main() {
   k.loadSound("attached", "/game/sound/attached.wav");
   k.loadSound("appear", "/game/sound/appear.wav");
   k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
+
+  k.onLoad(() => {
 
   const setCustomCursor = (cursorPath) => {
     const canvas = k.canvas;
@@ -55,8 +60,9 @@ export default function main() {
 
   level1(k);
   level2(k);
+  level3(k);
   end(k);
 
   k.go("level1");
-
+});
 }

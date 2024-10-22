@@ -1,15 +1,19 @@
-export function level2(k) {
-  k.scene("level2", () => {
+export function level3(k) {
+  k.scene("level3", () => {
     let bogies = [
       { x: 200, y: 420, value: 3 },
-      { x: 350, y: 450, value: 5 },
-      { x: 490, y: 450, value: 2 }
+      { x: 400, y: 450, value: 5 },
+      { x: 600, y: 450, value: 2 }
     ];
     let newBogie = { x: 20, y: 550, value: null };
-    let chainPosition = { x: 860, y: 605 };
+    let chainPosition1 = { x: 840, y: 585 };
+    let chainPosition2 = { x: 840, y: 585 };
     let gameState = "SELECT_NUMBER";
     let score = 0;
-    let currentBogieIndex = 0
+    let currentBogieIndex = -1
+    let insertionIndex = Math.floor(Math.random() * (bogies.length - 1)) + 1;
+    //let insertionIndex = 1
+    let removeIndex = -100;
 
 
     function drawBogies() {
@@ -21,12 +25,14 @@ export function level2(k) {
             scale: 0.1,
             origin: "center",
           });
-          k.drawSprite({
-            sprite: 'chain',
-            pos: k.vec2(bogie.x + 97, bogie.y + 27),
-            scale: 0.05,
-            origin: 'center'
-          });
+          if (index !== removeIndex) {
+            k.drawSprite({
+              sprite: 'chain',
+              pos: k.vec2(bogie.x + 97, bogie.y + 15),
+              scale: 0.1,
+              origin: 'center'
+            });
+          }
           k.drawText({
             text: bogie.value.toString(),
             pos: k.vec2(bogie.x + 37, bogie.y - 30),
@@ -43,12 +49,14 @@ export function level2(k) {
             origin: "center",
           });
           if (index < bogies.length - 1) {
-            k.drawSprite({
-              sprite: 'chain',
-              pos: k.vec2(bogie.x + 86, bogie.y - 3),
-              scale: 0.05,
-              origin: 'center'
-            });
+            if (index !== removeIndex) {
+              k.drawSprite({
+                sprite: 'chain',
+                pos: k.vec2(bogie.x + 88, bogie.y - 16),
+                scale: 0.1,
+                origin: 'center'
+              });
+            }
           }
           k.drawText({
             text: bogie.value.toString(),
@@ -83,14 +91,75 @@ export function level2(k) {
     }
 
     function drawChain() {
-      if (gameState === "LINK") {
+
+      if (gameState === "LINKOFFIRSTCHAIN") {
+        //Appearing 1st chain
         k.drawSprite({
           sprite: 'chain2',
-          pos: k.vec2(chainPosition.x, chainPosition.y),
-          scale: 0.05,
+          pos: k.vec2(chainPosition1.x, chainPosition1.y),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
           origin: 'center'
         });
       }
+
+      if (gameState === "ATTACHEDFIRSTCHAIN" || gameState === "BEFORELINKOFSECONDCHAIN") {
+        //Attached 1st chain
+        k.drawSprite({
+          sprite: 'chain2',
+          pos: insertionIndex === 1 ?
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 90))
+            :
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 75)),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
+          origin: 'center'
+        });
+      }
+
+      if (gameState === "LINKOFSECONDCHAIN") {
+        //Appearing 2nd chain
+        k.drawSprite({
+          sprite: 'chain2',
+          pos: k.vec2(chainPosition2.x, chainPosition2.y),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
+          origin: 'center'
+        });
+        //Attached 1st chain
+        k.drawSprite({
+          sprite: 'chain2',
+          pos: insertionIndex === 1 ?
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 90))
+            :
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 75)),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
+          origin: 'center'
+        });
+      }
+
+
+      if (gameState === "ATTACHEDSECONDCHAIN") {
+        //Attached 1st chain
+        k.drawSprite({
+          sprite: 'chain2',
+          pos: insertionIndex === 1 ?
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 90))
+            :
+            k.vec2(((bogies[insertionIndex].x) - 25), ((bogies[insertionIndex].y) - 75)),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
+          origin: 'center'
+        });
+        //Attached 2nd chain
+        k.drawSprite({
+          sprite: 'chain2',
+          pos: insertionIndex === 1 ? 
+          k.vec2(((bogies[insertionIndex - 1].x) + 80), (bogies[insertionIndex].y)-90)
+          :
+          k.vec2(((bogies[insertionIndex - 1].x) + 80), (bogies[insertionIndex].y)-75),
+          scale: insertionIndex === 1 ? 0.1 : 0.08,
+          origin: 'center'
+        });
+        removeIndex = insertionIndex - 1
+      }
+
     }
 
     function drawInstructions() {
@@ -132,7 +201,7 @@ export function level2(k) {
             origin: "center",
           });
           k.drawText({
-            text: "Reach at the end!",
+            text: `Reach before Boggy No. ${insertionIndex} `,
             pos: k.vec2(130, 240),
             color: k.rgb(0, 0, 0),
             size: 24,
@@ -166,7 +235,7 @@ export function level2(k) {
             origin: "center",
           });
           break;
-        case "BEFORELINK":
+        case "BEFORELINKOFFIRSTCHAIN":
           k.drawText({
             text: "A chain will appear",
             pos: k.vec2(130, 160),
@@ -192,7 +261,33 @@ export function level2(k) {
             origin: "center",
           });
           break;
-        case "LINK":
+        case "BEFORELINKOFSECONDCHAIN":
+          k.drawText({
+            text: "A second chain will appear",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "from the portal",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "at the bottom!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "LINKOFFIRSTCHAIN":
           k.drawText({
             text: "Drag the chain",
             pos: k.vec2(130, 160),
@@ -202,7 +297,7 @@ export function level2(k) {
             origin: "center",
           });
           k.drawText({
-            text: "At the end of last boggy",
+            text: "Place it between",
             pos: k.vec2(130, 200),
             color: k.rgb(0, 0, 0),
             size: 24,
@@ -210,7 +305,34 @@ export function level2(k) {
             origin: "center",
           });
           k.drawText({
-            text: "To link the new Boggy!",
+            text: "the new boggy and the next boggy!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+
+          break;
+        case "LINKOFSECONDCHAIN":
+          k.drawText({
+            text: "Drag the chain",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "Place it between",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "the new boggy and the previous boggy!",
             pos: k.vec2(130, 240),
             color: k.rgb(0, 0, 0),
             size: 24,
@@ -218,7 +340,59 @@ export function level2(k) {
             origin: "center",
           });
           break;
-        case "ATTACHED":
+        case "ATTACHEDSECONDCHAIN":
+          k.drawText({
+            text: "Well done!",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "Both chains are ",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "attachted to the new boggy!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "ATTACHEDFIRSTCHAIN":
+          k.drawText({
+            text: "Good!",
+            pos: k.vec2(130, 160),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "The new boggy is attached",
+            pos: k.vec2(130, 200),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          k.drawText({
+            text: "with the next boggy!",
+            pos: k.vec2(130, 240),
+            color: k.rgb(0, 0, 0),
+            size: 24,
+            font: "myFont",
+            origin: "center",
+          });
+          break;
+        case "AFTERATTACHED":
           k.drawText({
             text: "BRAVO!",
             pos: k.vec2(130, 160),
@@ -228,7 +402,7 @@ export function level2(k) {
             origin: "center",
           });
           k.drawText({
-            text: "The boggy is attached",
+            text: "The new boggy is inserted",
             pos: k.vec2(130, 200),
             color: k.rgb(0, 0, 0),
             size: 24,
@@ -236,7 +410,7 @@ export function level2(k) {
             origin: "center",
           });
           k.drawText({
-            text: "at the end!",
+            text: "in the train!",
             pos: k.vec2(130, 240),
             color: k.rgb(0, 0, 0),
             size: 24,
@@ -244,6 +418,7 @@ export function level2(k) {
             origin: "center",
           });
           break;
+
         default:
           k.drawText({
             text: "Enter a Number",
@@ -273,22 +448,22 @@ export function level2(k) {
     k.onKeyPress("space", () => {
       k.play("jump", { volume: 0.8 });
       if (gameState === "JUMP") {
-        if (currentBogieIndex < bogies.length) {
-          const targetBogie = bogies[currentBogieIndex];
+
+        if (currentBogieIndex < insertionIndex) {
+          const targetBogie = bogies[currentBogieIndex + 1];
           currentBogieIndex++;
 
-          // Immediately place the newBogie on top of the current bogie
-          newBogie.x = targetBogie.x;
-          newBogie.y = targetBogie.y - 80;  // Jump above the target bogie
+          newBogie.x = targetBogie.x + 102;
+          newBogie.y = targetBogie.y - 80;
 
-          // If we've jumped over all the bogies, switch to the LINK state
-          if (currentBogieIndex === bogies.length) {
-            gameState = "BEFORELINK";
+          if (currentBogieIndex === (insertionIndex - 1)) {
+            gameState = "BEFORELINKOFFIRSTCHAIN";
             setTimeout(() => {
               k.play("appear", { volume: 1.4 });
-              gameState = "LINK";
+              gameState = "LINKOFFIRSTCHAIN";
             }, 2000);
-            // Move to LINK state after the last jump
+
+
           }
         }
       }
@@ -340,47 +515,109 @@ export function level2(k) {
         ) {
           k.play("link", { volume: 1.4 });
           gameState = "JUMP";
-          chainPosition = { x: 860, y: 605 };
         }
 
       }
 
-      if (gameState === "LINK") {
+
+      if (gameState === "LINKOFSECONDCHAIN") {
         currentBogieIndex = 0
         if (k.isMouseDown()) {
-          chainPosition = k.mousePos();
+          chainPosition2 = k.mousePos();
+          // console.log("Chain Pos :"+ chainPosition.x +" "+ chainPosition.y)
+          // console.log("Bogie Pos"+ bogies[insertionIndex-1].x + " "+  bogies[insertionIndex-1].y )
 
           if (
-            Math.abs(chainPosition.x - ((bogies[bogies.length - 1].x) + 80)) < 10 &&
-            Math.abs((chainPosition.y + 35) - (bogies[bogies.length - 1].y)) < 10
+            Math.abs(chainPosition2.x - ((bogies[insertionIndex - 1].x) + 80)) < 10 &&
+            Math.abs((chainPosition2.y + 60) - (bogies[insertionIndex - 1].y)) < 10
           ) {
-            bogies.push({ x: bogies[bogies.length - 1].x + 140, y: bogies[bogies.length - 1].y, value: newBogie.value });
-
-            newBogie = { x: 20, y: 550, value: null };
             k.play("goalSound", { volume: 0.7 });
-            gameState = "ATTACHED";
-            setTimeout(() => {
-              score += 10;
-              k.play("attached", { volume: 0.8 });
-            }, 500);
+            gameState = "ATTACHEDSECONDCHAIN"
 
             setTimeout(() => {
-              if (score === 30) {
-                k.play("completed", { volume: 0.8 });
-                k.go('end', { nextLevel: 'level3' })
+              for (let i = 0; i < bogies.length; i++) {
+                if (i < insertionIndex) {
+                  bogies[i].x -= 50
+                }
+                else if (i === insertionIndex) {
+                  bogies.splice(insertionIndex, 0, { x: bogies[i - 1].x + 200, y: bogies[bogies.length - 1].y, value: newBogie.value });
+                }
+                else if (i > insertionIndex) {
+                  bogies[i].x += 150
+                }
+
               }
-              gameState = "SELECT_NUMBER";
-            }, 2000);
+              gameState = "AFTERATTACHED"
+              removeIndex = -100
+              chainPosition1 = { x: 840, y: 585 };
+              chainPosition2 = { x: 840, y: 585 };
+              currentBogieIndex = -1
+              newBogie = { x: 20, y: 550, value: null };
+
+              setTimeout(() => {
+                score += 10;
+                k.play("attached", { volume: 1.5 });
+              }, 100);
+
+
+              setTimeout(() => {
+                if (score === 20) {
+                  k.play("completed", { volume: 0.8 });
+                  k.go('end', { nextLevel: 'level1' })
+                }
+                gameState = "SELECT_NUMBER";
+                insertionIndex = Math.floor(Math.random() * (bogies.length - 1)) + 1;
+              }, 2500);
+
+            }, 2500);
+
+
+
 
 
           }
         }
       }
+
+      if (gameState === "LINKOFFIRSTCHAIN") {
+
+        if (k.isMouseDown()) {
+          chainPosition1 = k.mousePos();
+
+          //   console.log("Chain Pos :"+ chainPosition2.x +" "+ chainPosition2.y)
+          //   console.log("Bogie Pos"+ bogies[insertionIndex].x + " "+  bogies[insertionIndex].y )
+
+          if (
+            Math.abs(chainPosition1.x - ((bogies[insertionIndex].x) - 25)) < 10 &&
+            Math.abs((chainPosition1.y + 75) - (bogies[insertionIndex].y)) < 10
+          ) {
+
+            k.play("goalSound", { volume: 0.7 });
+            gameState = "ATTACHEDFIRSTCHAIN";
+
+            // Change gameState to "BEFORELINK" after 1 seconds
+            setTimeout(() => {
+              gameState = "BEFORELINKOFSECONDCHAIN";
+
+              // After another 2 seconds, change gameState to "LINK" and play the animation
+              setTimeout(() => {
+                k.play("appear", { volume: 1.4 });
+                gameState = "LINKOFSECONDCHAIN";
+              }, 2500);
+
+            }, 2500);
+
+
+          }
+        }
+
+      }
+
     });
 
     k.onDraw(() => {
       k.drawSprite({
-        sprite: 'background2',
+        sprite: 'background3',
         pos: k.vec2(0, 0), // Position at the top-left corner
         scale: 1.1, // Scale to fit the screen
         origin: 'topleft'
@@ -399,7 +636,7 @@ export function level2(k) {
         size: 28,
       });
       k.drawText({
-        text: `Level 2`,
+        text: `Level 3`,
         pos: k.vec2(k.width() - 600, 90),
         color: k.rgb(0, 0, 0),
         font: "myFont",
@@ -458,5 +695,5 @@ export function level2(k) {
     k.onKeyPress("6", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 6; gameState = "MOVE_BOGIE"; } });
   });
 
-  k.go("level2");
+  k.go("level3");
 }
