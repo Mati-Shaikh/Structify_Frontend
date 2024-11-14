@@ -9,6 +9,8 @@ import HomePage from "./components/Home/home";
 import Game from "./components/Game/Game";
 import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import WelcomePage from "./components/Welcome/Welcome";
+import InitialQuestions from "./components/InitialQuestions/InitialQuestions";
 
 const App = () => {
   return (
@@ -29,6 +31,14 @@ const App = () => {
           element={<ProtectedRoute element={ProfileManagement} />}
         />
         <Route path="/game" element={<ProtectedRoute element={Game} />} />
+        <Route
+          path="/welcome"
+          element={<ProtectedRoute element={WelcomePage} />}
+        />
+        <Route
+          path="/initialQuestions"
+          element={<ProtectedRoute element={InitialQuestions} />}
+        />
       </Routes>
     </Router>
   );
