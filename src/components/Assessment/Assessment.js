@@ -26,23 +26,22 @@ const Assessment = () => {
         );
         const data = await response.json();
         // Transform the questions to match the slides format
-        const transformedQuestions = data.map(question => ({
+        const transformedQuestions = data.map((question) => ({
           title: question.question,
           options: question.options.map((option, index) => ({
-            id: option, 
+            id: option,
             label: option,
           })),
           questionId: question._id,
-          correct: question.answer // This is now the correct answer string
+          correct: question.answer, // This is now the correct answer string
         }));
 
         const allSlides = [
           {
-            title: "Let's gauge your knowledge Insertion in Linked List!",
-            type: "intro"
+            title: "Let's gauge your knowledge of Insertion in Linked List!",
+            type: "intro",
           },
           ...transformedQuestions,
-         
         ];
 
         setQuestions(allSlides);
@@ -56,29 +55,29 @@ const Assessment = () => {
     fetchQuestions();
   }, []);
 
- 
-
   const handleOptionSelect = (slideIndex, optionId) => {
     if (answeredSlides[slideIndex]) return;
 
     setSelectedOptions({
       ...selectedOptions,
-      [slideIndex]: optionId
+      [slideIndex]: optionId,
     });
 
     setAnsweredSlides({
       ...answeredSlides,
-      [slideIndex]: true
+      [slideIndex]: true,
     });
 
     if (questions[slideIndex]?.questionId) {
       const newResponse = {
         questionId: questions[slideIndex].questionId,
-        selectedOption: optionId // Store the complete answer string
+        selectedOption: optionId, // Store the complete answer string
       };
 
-      setUserResponses(prev => {
-        const filtered = prev.filter(r => r.questionId !== questions[slideIndex].questionId);
+      setUserResponses((prev) => {
+        const filtered = prev.filter(
+          (r) => r.questionId !== questions[slideIndex].questionId
+        );
         return [...filtered, newResponse];
       });
     }
@@ -89,13 +88,13 @@ const Assessment = () => {
       setCurrentSlide(currentSlide + 1);
     } else {
       try {
-        await fetch('http://localhost:3005/api/submit-assessment', {
-          method: 'POST',
+        await fetch("http://localhost:3005/api/submit-assessment", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             token: localStorage.getItem("token"),
           },
-          body: JSON.stringify({ responses: userResponses })
+          body: JSON.stringify({ responses: userResponses }),
         });
         navigate("/home");
       } catch (error) {
@@ -111,14 +110,17 @@ const Assessment = () => {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen bg-white p-6 flex items-center justify-center">
-      Loading questions...
-    </div>;
+    return (
+      <div className="min-h-screen bg-white p-6 flex items-center justify-center">
+        Loading questions...
+      </div>
+    );
   }
 
   const currentSlideData = questions[currentSlide];
   const isAnswered = answeredSlides[currentSlide];
-  const isContinueDisabled = currentSlideData?.options && !selectedOptions[currentSlide];
+  const isContinueDisabled =
+    currentSlideData?.options && !selectedOptions[currentSlide];
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -157,7 +159,9 @@ const Assessment = () => {
                 <div className="w-12 h-12 bg-green-400 rounded-lg flex items-center justify-center flex-shrink-0">
                   <div className="w-4 h-4 bg-black rounded-sm flex-shrink-0" />
                 </div>
-                <h1 className="text-xl font-bold mt-2">{currentSlideData?.title}</h1>
+                <h1 className="text-xl font-bold mt-2">
+                  {currentSlideData?.title}
+                </h1>
               </div>
               <div className="space-y-3">
                 {currentSlideData?.options?.map((option) => (
