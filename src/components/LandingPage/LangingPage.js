@@ -12,6 +12,7 @@ import BlogsAndArticles from "../LandingPageComponents/Blogs";
 const LandingPage = () => {
   return (
     <div>
+      {/*Calling components*/}
       <Header />
       <TaglineAndImage />
       <Topics />
