@@ -11,6 +11,7 @@ import ProfileManagement from "./components/Profile/profile";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import WelcomePage from "./components/Welcome/Welcome";
 import InitialQuestions from "./components/InitialQuestions/InitialQuestions";
+import Assessment from "./components/Assessment/Assessment";
 
 const App = () => {
   return (
@@ -38,6 +39,10 @@ const App = () => {
         <Route
           path="/initialQuestions"
           element={<ProtectedRoute element={InitialQuestions} />}
+        />
+        <Route
+          path="/assessment"
+          element={<ProtectedRoute element={Assessment} />}
         />
       </Routes>
     </Router>
