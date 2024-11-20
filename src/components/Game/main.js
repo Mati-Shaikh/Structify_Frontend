@@ -4,6 +4,9 @@ import { end } from "./end";
 import { level1 } from "./level1";
 import { level2 } from "./level2";
 import { level3 } from "./level3";
+import { level4 } from "./level4";
+import { level5 } from "./level5";
+import { level6 } from "./level6";
 
 export default function main() {
   const k = kaplay({
@@ -45,6 +48,7 @@ export default function main() {
   k.loadSound("link", "/game/sound/link.wav");
   k.loadSound("attached", "/game/sound/attached.wav");
   k.loadSound("appear", "/game/sound/appear.wav");
+  k.loadSound("lose", "/game/sound/lose.wav");
   k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
 
   k.onLoad(() => {
@@ -61,8 +65,11 @@ export default function main() {
   level1(k);
   level2(k);
   level3(k);
+  level4(k);
+  level5(k);
+  level6(k);
   end(k);
 
-  k.go("level1");
+  k.go("level4");
 });
 }
