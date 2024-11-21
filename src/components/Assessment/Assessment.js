@@ -133,6 +133,7 @@ const Assessment = () => {
           },
           body: JSON.stringify({ responses: userResponses }),
         });
+        console.log(userResponses)
         navigate("/home");
       } catch (error) {
         console.error("Error submitting assessment:", error);
@@ -152,12 +153,12 @@ const Assessment = () => {
 
   if (isLoading) {
     return (
-      <div class="flex-col gap-4 mt-64 w-full flex items-center justify-center">
+      <div className="flex-col gap-4 mt-64 w-full flex items-center justify-center">
     <div
-      class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
+      className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
     >
       <div
-        class="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"
+        className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"
       ></div>
     </div>
   </div>
