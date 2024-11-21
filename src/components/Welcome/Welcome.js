@@ -38,6 +38,7 @@ const Navbar = () => {
 const Welcome = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   const slides = [
@@ -92,17 +93,83 @@ const Welcome = () => {
     });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
+    
+  
+    // Before navigating to /initialQuestions, set ShowWelcome
     if (currentSlide < slides.length - 1) {
       if (slides[currentSlide].type === 'knowledge-check') {
         if (selectedOptions[currentSlide] === 'yes-knowledge') {
-          navigate('/initialQuestions');
+          setIsLoading(true);
+          try {
+            // Hit the SetShowWelcome route before navigating to /initialQuestions
+            const responseShowWelcome = await fetch('http://localhost:3005/api/users/setWelcome', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                token: localStorage.getItem('token'),
+              },
+              body: JSON.stringify({
+                userId: localStorage.getItem('userId'),
+              }),
+            });
+            if (!responseShowWelcome.ok) {
+              navigate('/welcome')
+              setIsLoading(false);
+            } else {
+              navigate('/initialQuestions');
+              setIsLoading(false);
+            }
+            
+          } catch (error) {
+            console.error('Error in SetShowWelcome API call');
+          }
           return;
         }
       }
       setCurrentSlide(currentSlide + 1);
     } else {
-      navigate('/home');
+      try {
+        setIsLoading(true);
+        // Hit the SetShowWelcome route before navigating to /home
+        const responseShowWelcome = await fetch('http://localhost:3005/api/users/setWelcome', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem('userId'),
+          }),
+        });
+  
+
+        const responseShowInitialQuestions = await fetch('http://localhost:3005/api/users/setInitialQuestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem('userId'),
+          }),
+        });
+        if (!responseShowWelcome.ok) {
+          navigate('/welcome')
+          setIsLoading(false);
+        } 
+        else if (!responseShowInitialQuestions.ok) {
+          navigate('/initialQuestions')
+          setIsLoading(false);
+        }
+        else {
+          navigate('/home');
+          setIsLoading(false);
+        }
+
+      } catch (error) {
+        console.error('Error in SetShowWelcome API call or SetInitialQuestions API Call');
+      }
     }
   };
 
@@ -204,17 +271,21 @@ const Welcome = () => {
 
           {/* Continue button */}
           <div className="mt-12 flex justify-center">
-            <button
+          <button
               onClick={handleContinue}
-              disabled={isContinueDisabled}
+              disabled={isContinueDisabled || isLoading} // Disable button while loading
               className={`group flex items-center space-x-2 px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 ${
-                isContinueDisabled
+                isContinueDisabled || isLoading
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:translate-y-[-2px]'
               }`}
             >
-              <span>Continue</span>
-              <ArrowRight size={20} className="transform transition-transform group-hover:translate-x-1" />
+              <span>{isLoading ? 'Loading' : 'Continue'}</span>
+              {isLoading ? (
+                <></>
+              ) : (
+                <ArrowRight size={20} className="transform transition-transform group-hover:translate-x-1" />
+              )}
             </button>
           </div>
         </div>

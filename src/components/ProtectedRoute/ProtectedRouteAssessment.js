@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Null initially while verifying
+const ProtectedRouteAssessment = ({ element: Component, assessmentName, ...rest }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(null); 
 
   useEffect(() => {
     const verifyToken = async () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
       const userFullName = localStorage.getItem('userFullName');
+
+
 
       if (!token || !userId || !userFullName) {
         setIsAuthenticated(false);
@@ -17,21 +19,17 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
 
       try {
         // Call your backend to verify the token along with userId and userFullName
-        const response = await fetch('http://localhost:3005/api/auth/protectedRoute', {
+        const response = await fetch('http://localhost:3005/api/users/protectedRouteAssessment', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            token: token, // Send token in authorization header
+             token: token, 
           },
-          body: JSON.stringify({ userId, userFullName }), // Send userId and userFullName in the request body
+          body: JSON.stringify({ userId, userFullName, assessmentName }),
         });
-
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('userFullName');
           setIsAuthenticated(false);
         }
       } catch (err) {
@@ -40,7 +38,7 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
     };
 
     verifyToken();
-  }, []);
+  }, [assessmentName]);
 
   if (isAuthenticated === null) {
     // You can add a loading spinner here while verifying token
@@ -58,8 +56,8 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   return isAuthenticated ? (
     <Component {...rest} />
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/home" replace />
   );
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteAssessment;

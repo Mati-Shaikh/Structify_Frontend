@@ -1,49 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(null); // Null initially while verifying
+const ProtectedRouteInitialQuestions = ({ element: Component, ...rest }) => {
+  const [isInitialQuestionsVisible, setIsInitialQuestionsVisible] = useState(null);
 
   useEffect(() => {
-    const verifyToken = async () => {
+    const checkShowInitialQuestions = async () => {
       const token = localStorage.getItem('token');
       const userId = localStorage.getItem('userId');
       const userFullName = localStorage.getItem('userFullName');
 
       if (!token || !userId || !userFullName) {
-        setIsAuthenticated(false);
+        setIsInitialQuestionsVisible(false);
         return;
       }
 
       try {
-        // Call your backend to verify the token along with userId and userFullName
-        const response = await fetch('http://localhost:3005/api/auth/protectedRoute', {
+        // Make an API call to verify user progress
+        const response = await fetch('http://localhost:3005/api/users/protectedRouteInitialQuestions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            token: token, // Send token in authorization header
+            token: token,
           },
-          body: JSON.stringify({ userId, userFullName }), // Send userId and userFullName in the request body
+          body: JSON.stringify({ userId, userFullName }),
         });
 
         if (response.ok) {
-          setIsAuthenticated(true);
+          
+          // Check the message to set the state
+          setIsInitialQuestionsVisible(true);
         } else {
-          localStorage.removeItem('token');
-          localStorage.removeItem('userId');
-          localStorage.removeItem('userFullName');
-          setIsAuthenticated(false);
+          setIsInitialQuestionsVisible(false);
         }
       } catch (err) {
-        setIsAuthenticated(false);
+        setIsInitialQuestionsVisible(false);
       }
     };
 
-    verifyToken();
+    checkShowInitialQuestions();
   }, []);
 
-  if (isAuthenticated === null) {
-    // You can add a loading spinner here while verifying token
+  if (isInitialQuestionsVisible === null) {
+    // You can add a loading spinner here while checking the welcome status
     return <div class="flex-col gap-4 mt-64 w-full flex items-center justify-center">
     <div
       class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
@@ -55,11 +54,12 @@ const ProtectedRoute = ({ element: Component, ...rest }) => {
   </div>
   }
 
-  return isAuthenticated ? (
+  // Show the welcome page or navigate based on the `showWelcome` status
+  return isInitialQuestionsVisible ? (
     <Component {...rest} />
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/home" replace />
   );
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteInitialQuestions;

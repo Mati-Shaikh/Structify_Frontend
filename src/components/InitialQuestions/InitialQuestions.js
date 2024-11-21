@@ -38,6 +38,7 @@ const InitialQuestions = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [answeredSlides, setAnsweredSlides] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const slides = [
@@ -133,11 +134,34 @@ const InitialQuestions = () => {
     });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentSlide < slides.length - 1) {
       setCurrentSlide(currentSlide + 1);
     } else {
-      navigate('/home');
+      setIsLoading(true);
+      try{
+          const responseShowInitialQuestions = await fetch('http://localhost:3005/api/users/setInitialQuestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem('userId'),
+          }),
+        });
+        if (!responseShowInitialQuestions.ok) {
+          navigate('/initialQuestions')
+          setIsLoading(false);
+        }
+        else {
+          navigate('/home');
+          setIsLoading(false);
+        }
+      } catch (error){
+        console.error('Error in SetInitialQuestions API Call');
+      }
+      
     }
   };
 
@@ -266,17 +290,21 @@ const InitialQuestions = () => {
 
           {/* Continue button */}
           <div className="mt-12 flex justify-center">
-            <button
+          <button
               onClick={handleContinue}
-              disabled={isContinueDisabled}
+              disabled={isContinueDisabled || isLoading} // Disable button while loading
               className={`group flex items-center space-x-2 px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 ${
-                isContinueDisabled
+                isContinueDisabled || isLoading
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-gray-900 text-white hover:bg-gray-800 hover:shadow-lg hover:translate-y-[-2px]'
               }`}
             >
-              <span>Continue</span>
-              <ArrowRight size={20} className="transform transition-transform group-hover:translate-x-1" />
+              <span>{isLoading ? 'Loading' : 'Continue'}</span>
+              {isLoading ? (
+                <></>
+              ) : (
+                <ArrowRight size={20} className="transform transition-transform group-hover:translate-x-1" />
+              )}
             </button>
           </div>
         </div>

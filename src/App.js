@@ -12,6 +12,9 @@ import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
 import WelcomePage from "./components/Welcome/Welcome";
 import InitialQuestions from "./components/InitialQuestions/InitialQuestions";
 import Assessment from "./components/Assessment/Assessment";
+import ProtectedRouteAssessment from "./components/ProtectedRoute/ProtectedRouteAssessment";
+import ProtectedRouteWelcome from "./components/ProtectedRoute/ProtectedRouteWelcome";
+import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/ProtectedRouteInitialQuestions";
 
 const App = () => {
   return (
@@ -32,18 +35,22 @@ const App = () => {
           element={<ProtectedRoute element={ProfileManagement} />}
         />
         <Route path="/game" element={<ProtectedRoute element={Game} />} />
+
+
         <Route
           path="/welcome"
-          element={<ProtectedRoute element={WelcomePage} />}
+          element={<ProtectedRouteWelcome element={WelcomePage} />}
         />
         <Route
           path="/initialQuestions"
-          element={<ProtectedRoute element={InitialQuestions} />}
+          element={<ProtectedRouteInitialQuestions element={InitialQuestions} />}
         />
         <Route
           path="/assessment"
-          element={<ProtectedRoute element={Assessment} />}
+          element={<ProtectedRouteAssessment element={Assessment} assessmentName="LinkedListInsertion"/>}
         />
+
+        
       </Routes>
     </Router>
   );

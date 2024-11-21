@@ -55,7 +55,36 @@ const LoginPage = () => {
       localStorage.setItem("token", responseData.token); // Store JWT token
       localStorage.setItem("userId", responseData.user._id); // Store user ID
       localStorage.setItem("userFullName", responseData.user.FullName); // Store full name
-      navigate("/home")
+
+      const responseShowWelcome = await fetch('http://localhost:3005/api/users/protectedRouteWelcome', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: localStorage.getItem('token'),
+        },
+        body: JSON.stringify({ userId:  localStorage.getItem('userId'), userFullName:  localStorage.getItem('userFullName') }),
+      });
+      if (responseShowWelcome.ok) {
+        navigate("/welcome")
+      } else {
+        const responseShowInitialQuestions = await fetch('http://localhost:3005/api/users/protectedRouteInitialQuestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({ userId:  localStorage.getItem('userId'), userFullName:  localStorage.getItem('userFullName') }),
+        });
+
+        if (responseShowInitialQuestions.ok){
+          navigate("/initialQuestions")
+        }
+        else{
+          navigate("/home")
+        }
+      }
+
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -89,7 +118,34 @@ const LoginPage = () => {
       localStorage.setItem("token", responseData.token);
       localStorage.setItem("userId", responseData.user._id);
       localStorage.setItem("userFullName", responseData.user.FullName);
-      navigate("/home")
+      
+      const responseShowWelcome = await fetch('http://localhost:3005/api/users/protectedRouteWelcome', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: localStorage.getItem('token'),
+        },
+        body: JSON.stringify({ userId:  localStorage.getItem('userId'), userFullName:  localStorage.getItem('userFullName') }),
+      });
+      if (responseShowWelcome.ok) {
+        navigate("/welcome")
+      } else {
+        const responseShowInitialQuestions = await fetch('http://localhost:3005/api/users/protectedRouteInitialQuestions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            token: localStorage.getItem('token'),
+          },
+          body: JSON.stringify({ userId:  localStorage.getItem('userId'), userFullName:  localStorage.getItem('userFullName') }),
+        });
+
+        if (responseShowInitialQuestions.ok){
+          navigate("/initialQuestions")
+        }
+        else{
+          navigate("/home")
+        }
+      }
 
     } catch (err) {
       setError(err.message);
