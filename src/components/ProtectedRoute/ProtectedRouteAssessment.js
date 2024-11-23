@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRouteAssessment = ({ element: Component, assessmentName, ...rest }) => {
+const ProtectedRouteAssessment = ({ element: Component, assessmentId, ...rest }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); 
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const ProtectedRouteAssessment = ({ element: Component, assessmentName, ...rest 
             'Content-Type': 'application/json',
              token: token, 
           },
-          body: JSON.stringify({ userId, userFullName, assessmentName }),
+          body: JSON.stringify({ userId, userFullName, assessmentId }),
         });
         if (response.ok) {
           setIsAuthenticated(true);
@@ -38,7 +38,7 @@ const ProtectedRouteAssessment = ({ element: Component, assessmentName, ...rest 
     };
 
     verifyToken();
-  }, [assessmentName]);
+  }, [assessmentId]);
 
   if (isAuthenticated === null) {
     // You can add a loading spinner here while verifying token

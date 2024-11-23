@@ -10,6 +10,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
 
+
   const handleLogout = () => {
     // Clear local storage
     localStorage.clear();
@@ -17,7 +18,8 @@ const Navbar = () => {
     navigate("/");
   };
 
-  
+
+
   useEffect(() => {
     const handleScroll = () => {
       const isScrolled = window.scrollY > 0;
@@ -33,9 +35,9 @@ const Navbar = () => {
     };
   }, [scrolled]);
 
+
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 bg-white p-4 ${
-        scrolled ? 'shadow-md' : ''
+    <nav className={`fixed top-0 left-0 right-0 z-50 bg-white p-4 ${scrolled ? 'shadow-md' : ''
       } `}>
       <div className="container mx-auto flex justify-between">
         {/* Structify Logo and Home Link */}
@@ -114,13 +116,12 @@ const Card = ({ title, description, topics, logoSrc }) => {
       onMouseLeave={() => setIsFlipped(false)}
     >
       <div
-        className={` relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${
-          isFlipped ? "[transform:rotateY(180deg)]" : ""
-        }`}
+        className={` relative w-full h-full transition-all duration-500 [transform-style:preserve-3d] ${isFlipped ? "[transform:rotateY(180deg)]" : ""
+          }`}
       >
         {/* Front of the card */}
-        <div className="border border-gray-300 absolute w-full h-full rounded-xl shadow-lg overflow-hidden [backface-visibility:hidden] bg-white">
-          <div className="h-1/2 overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center p-6">
+        <div className="border border-gray-300 absolute w-full h-full rounded-xl shadow-sm overflow-hidden [backface-visibility:hidden] bg-white">
+          <div className="h-1/2 overflow-hidden bg-gradient-to-b from-purple-100 to-purple-50 flex items-center justify-center p-6">
             <img
               src={logoSrc}
               alt={`${title} logo`}
@@ -149,7 +150,7 @@ const Card = ({ title, description, topics, logoSrc }) => {
               {topics.map((topic, index) => (
                 <button
                   key={index}
-                  className="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:scale-105"
+                  className="bg-white  rounded-lg p-4 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 cursor-default"
                 >
                   <div className="flex items-center">
                     <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
@@ -178,6 +179,62 @@ const HomePage = () => {
     { day: "Su", active: false },
     { day: "M", active: false },
   ];
+
+  const [currentStatus, setCurrentStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const fetchLearningPath = async () => {
+      const token = localStorage.getItem('token');
+
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3005/api/users/learningPath', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
+        });
+        const data = await response.json();
+        setCurrentStatus(data.currentStatus);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLearningPath();
+  }, []);
+
+
+  if (loading) {
+    return (
+      <div className="flex-col gap-4 mt-64 w-full flex items-center justify-center">
+        <div
+          className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
+        >
+          <div
+            className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"
+          ></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen items-center justify-center text-red-500">
+        Error loading current Status{error}
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen text-center">
@@ -234,9 +291,8 @@ const HomePage = () => {
                       </svg>
                     </div>
                     <span
-                      className={`text-sm ${
-                        item.active ? "font-medium" : "text-gray-400"
-                      }`}
+                      className={`text-sm ${item.active ? "font-medium" : "text-gray-400"
+                        }`}
                     >
                       {item.day}
                     </span>
@@ -300,52 +356,44 @@ const HomePage = () => {
               {/* Content section */}
               <div className="p-6">
                 <div className="text-sm text-indigo-600 font-medium mb-2">
-                  CS & PROGRAMMING · LEVEL 3
+                  {currentStatus.topic} · Level {currentStatus.level.id}
                 </div>
                 <h2 className="text-xl font-bold mb-4">
-                  Computer Science Fundamentals
+                  {currentStatus.level.name}
                 </h2>
-                <button className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-colors">
-                  Continue path
+                <button
+                  onClick={() => navigate('/learningPath')}
+                  className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-colors"
+                >
+                  Continue
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex-col mt-20 mb-16  py-6 "> 
-      <motion.div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">
-          What you will{' '}
-          <span className="text-blue-600 relative">
-            learn
-            <span className="absolute -right-6 top-0 text-5xl">!</span>
-          </span>
-        </h2>
-        <p className="text-gray-600 text-lg">
-          Master fundamental data structures through interactive lessons and hands-on practice
-        </p>
-      </motion.div>
-      <div className="flex flex-wrap justify-between  gap-8 mx-44 px-6">
-        <Card
-          title="Linked List"
-          description="A linear data structure where elements are stored in nodes."
-          topics={["Insertion", "Deletion", "Traversal"]}
-          logoSrc="/link.svg"
-        />
-        <Card
-          title="Stacks"
-          description="Last-In-First-Out (LIFO) data structure for temporary data storage."
-          topics={["Push operation", "Pop operation", "Peek operation"]}
-          logoSrc="/stack.svg"
-        />
-        <Card
-          title="Queues"
-          description="First-In-First-Out (FIFO) data structure for ordered data processing."
-          topics={["Enqueue operation", "Dequeue operation", "Search Queue"]}
-          logoSrc="/queue1.svg"
-        />
-      </div>
+      <div className="flex-col mt-8 mb-16 py-16">
+        
+        <div className="flex flex-wrap justify-between  gap-8 mx-48 px-6">
+          <Card
+            title="Linked List"
+            description="A linear data structure where elements are stored in nodes."
+            topics={["Insertion", "Deletion", "Traversal"]}
+            logoSrc="/link.svg"
+          />
+          <Card
+            title="Stacks"
+            description="Last-In-First-Out (LIFO) data structure for temporary data storage."
+            topics={["Push operation", "Pop operation", "Peek operation"]}
+            logoSrc="/stack.svg"
+          />
+          <Card
+            title="Queues"
+            description="First-In-First-Out (FIFO) data structure for ordered data processing."
+            topics={["Enqueue operation", "Dequeue operation", "Search Queue"]}
+            logoSrc="/queue1.svg"
+          />
+        </div>
 
       </div>
     </div>

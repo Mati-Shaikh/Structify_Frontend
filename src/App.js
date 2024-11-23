@@ -15,6 +15,7 @@ import Assessment from "./components/Assessment/Assessment";
 import ProtectedRouteAssessment from "./components/ProtectedRoute/ProtectedRouteAssessment";
 import ProtectedRouteWelcome from "./components/ProtectedRoute/ProtectedRouteWelcome";
 import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/ProtectedRouteInitialQuestions";
+import LearningPath from "./components/LearningPath/LearningPath";
 
 const App = () => {
   return (
@@ -28,6 +29,10 @@ const App = () => {
         <Route
           path="/dashboard"
           element={<ProtectedRoute element={Dashboard} />}
+        />
+         <Route
+          path="/learningPath"
+          element={<ProtectedRoute element={LearningPath} />}
         />
         <Route path="/home" element={<ProtectedRoute element={HomePage} />} />
         <Route
@@ -47,7 +52,7 @@ const App = () => {
         />
         <Route
           path="/assessment"
-          element={<ProtectedRouteAssessment element={Assessment} assessmentName="LinkedListInsertion"/>}
+          element={<ProtectedRouteAssessment element={Assessment} assessmentId="1"/>}
         />
 
         
