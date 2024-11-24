@@ -33,7 +33,8 @@ const Navbar = () => {
   );
 };
 
-const Assessment = () => {
+const Assessment = ({ assessmentId }) => {
+  
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [answeredSlides, setAnsweredSlides] = useState({});
@@ -125,16 +126,20 @@ const Assessment = () => {
       
     } else {
       try {
-        await fetch("http://localhost:3005/api/submit-assessment", {
+        setIsLoading(true);
+        const response = await fetch("http://localhost:3005/api/users/submitAnswers", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             token: localStorage.getItem("token"),
           },
-          body: JSON.stringify({ responses: userResponses }),
+          body: JSON.stringify({ responses: userResponses, assessmentId: assessmentId }),
         });
-        console.log(userResponses)
-        navigate("/home");
+        const results = await response.json();
+        
+        navigate("/assessmentResults", { state: { results } });
+
+        setIsLoading(false);
       } catch (error) {
         console.error("Error submitting assessment:", error);
       }

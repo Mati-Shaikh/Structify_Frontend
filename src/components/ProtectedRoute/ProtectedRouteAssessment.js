@@ -54,7 +54,7 @@ const ProtectedRouteAssessment = ({ element: Component, assessmentId, ...rest })
   }
 
   return isAuthenticated ? (
-    <Component {...rest} />
+    <Component {...rest} assessmentId={assessmentId} />
   ) : (
     <Navigate to="/home" replace />
   );

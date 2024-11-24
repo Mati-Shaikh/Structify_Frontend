@@ -16,6 +16,7 @@ import ProtectedRouteAssessment from "./components/ProtectedRoute/ProtectedRoute
 import ProtectedRouteWelcome from "./components/ProtectedRoute/ProtectedRouteWelcome";
 import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/ProtectedRouteInitialQuestions";
 import LearningPath from "./components/LearningPath/LearningPath";
+import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
 
 const App = () => {
   return (
@@ -25,6 +26,8 @@ const App = () => {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<LandingPage />} />
+
+        <Route path="/assessmentResults" element={<AssessmentResults />} />
 
         <Route
           path="/dashboard"
@@ -51,7 +54,7 @@ const App = () => {
           element={<ProtectedRouteInitialQuestions element={InitialQuestions} />}
         />
         <Route
-          path="/assessment"
+          path="/assessment1"
           element={<ProtectedRouteAssessment element={Assessment} assessmentId="1"/>}
         />
 
