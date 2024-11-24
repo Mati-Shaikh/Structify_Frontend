@@ -370,12 +370,25 @@ const HomePage = () => {
 
               {/* Content section */}
               <div className="p-6">
-                <div className="text-sm text-indigo-600 font-medium mb-2">
-                  {currentStatus.topic} · Level {currentStatus.level.id}
-                </div>
-                <h2 className="text-xl font-bold mb-4">
-                  {currentStatus.level.name}
-                </h2>
+                {currentStatus ? (
+                  <>
+                    <div className="text-sm text-indigo-600 font-medium mb-2">
+                      {currentStatus.topic} · Level {currentStatus.level.id}
+                    </div>
+                    <h2 className="text-xl font-bold mb-4">
+                      {currentStatus.level.name}
+                    </h2>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-sm text-indigo-600 font-medium mb-2">
+                      Start Your Journey
+                    </div>
+                    <h2 className="text-xl font-bold mb-4">
+                      Begin Learning Data Structures
+                    </h2>
+                  </>
+                )}
                 <button
                   onClick={() => navigate('/learningPath')}
                   className="w-full bg-gray-900 text-white py-3 rounded-full hover:bg-gray-800 transition-colors"
