@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Lock, Check, Play, ChevronRight, Link2} from 'lucide-react';
+import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle } from 'lucide-react';
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +104,33 @@ const Navbar = () => {
 };
 
 
+
+const Tooltip = ({ children, content }) => {
+  const [isVisible, setIsVisible] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setIsVisible(true)}
+      onMouseLeave={() => setIsVisible(false)}
+    >
+      {children}
+      {isVisible && (
+        <div className="absolute z-50 -top-14 left-1/2 transform -translate-x-1/2 transition-all duration-200 ease-in-out">
+          <div className="bg-white text-gray-800 px-4 py-2 rounded-lg shadow-lg border border-gray-100 text-sm font-medium whitespace-nowrap max-w-xs">
+            {content}
+            <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2.5 h-2.5 bg-white border-b border-r border-gray-100" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+
 const LearningPath = () => {
+  const navigate = useNavigate();
   const [learningPath, setLearningPath] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -111,15 +138,14 @@ const LearningPath = () => {
   useEffect(() => {
     const fetchLearningPath = async () => {
       const token = localStorage.getItem('token');
-
       try {
         setLoading(true);
         const response = await fetch('http://localhost:3005/api/users/learningPath', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-               token: token, 
-            },
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
         });
         const data = await response.json();
         setLearningPath(data.learningPath);
@@ -133,19 +159,41 @@ const LearningPath = () => {
     fetchLearningPath();
   }, []);
 
+  const handleLevelClick = (level) => {
+    if (!level.isLocked) {
+      navigate(`/game/level${level.id}`);
+    }
+  };
+
+  const handleAssessmentClick = (assessment, sectionIndex) => {
+    if (!assessment.isLocked) {
+      navigate(`/assessment${sectionIndex + 1}`);
+    }
+  };
+
   if (loading) {
     return (
-        <div className="flex-col gap-4 mt-64 w-full flex items-center justify-center">
-        <div
-          className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
-        >
-          <div
-            className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"
-          ></div>
+      <div className="flex-col gap-4 mt-64 w-full flex items-center justify-center">
+        <div className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
+          <div className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"></div>
         </div>
       </div>
     );
   }
+
+  const getLevelTooltipContent = (level) => {
+    if (level.isLocked) return "Complete previous levels to unlock";
+    if (level.isCompleted) return "Level completed";
+    if (level.danger) return "You lack concepts from this level. Play again";
+    return "Click to start this level";
+  };
+
+  const getAssessmentTooltipContent = (assessment) => {
+    if (assessment.isLocked) return "Complete all levels to unlock assessment";
+    if (assessment.isCompleted) return "Assessment completed";
+    if (assessment.danger) return "Complete lacking levels and attempt again";
+    return "Ready to test your knowledge";
+  };
 
   if (error) {
     return (
@@ -158,7 +206,7 @@ const LearningPath = () => {
   return (
     <div className="flex h-screen bg-white">
       <Navbar />
-      {/* Left Panel - Fixed */}
+      {/* Left Panel remains unchanged */}
       <div className="w-96 h-96 p-8 bg-white rounded-3xl ml-32 mt-32">
         <div className="mb-8">
           {/* Course Icon */}
@@ -187,91 +235,172 @@ const LearningPath = () => {
         </div>
       </div>
 
-      {/* Right Panel - Scrollable */}
+      {/* Enhanced Right Panel */}
       <div className="flex-1 overflow-y-auto mt-28">
         <div className="p-8">
           <div className="max-w-2xl mx-auto">
             {learningPath?.topics[0].subtopics.map((section, sectionIndex) => (
               <div key={sectionIndex} className="mb-12">
-                {/* Subtopic Header */}
+                {/* Subtopic Header with enhanced styling */}
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-700 flex items-center">
-                    <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm mr-3">
+                  <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+                    <span className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm mr-3 shadow-md">
                       {sectionIndex + 1}
                     </span>
                     {section.subtopic}
                   </h2>
                 </div>
 
-                {/* Levels */}
+                {/* Enhanced Levels */}
                 {section.levels.map((level, index) => (
                   <div key={level.id} className="relative">
-                    {/* Connecting Line */}
+                    {/* Improved connecting line with gradient */}
                     {(index !== section.levels.length - 1 || section.assessment) && (
-                      <div className="absolute left-[19px] top-10 bottom-0 w-0.5 bg-gradient-to-b from-purple-200 to-gray-200" />
+                      <div className="absolute left-[19px] top-10 bottom-0 w-1 bg-gradient-to-b from-blue-200 to-purple-200 rounded-full" />
                     )}
 
-                    {/* Level Box */}
+                    {/* Enhanced Level Box */}
+                    <Tooltip content={getLevelTooltipContent(level)}>
                     <div className="flex mb-6 group">
-                      {/* Level Icon/Status */}
-                      <div className={`
-                        w-10 h-10 rounded-lg shadow-sm flex items-center justify-center 
-                        transform transition-all duration-300 group-hover:scale-105
-                        ${level.isCompleted ? 'bg-green-500' :
-                          level.isLocked ? 'bg-gray-200' : 'bg-blue-500'}
-                      `}>
-                        {level.isLocked ? (
-                          <Lock className="w-5 h-5 text-gray-500" />
-                        ) : level.isCompleted ? (
-                          <Check className="w-5 h-5 text-white" />
-                        ) : (
-                          <Play className="w-5 h-5 text-white" />
-                        )}
-                      </div>
 
-                      {/* Level Content */}
-                      <div className="ml-4 flex-1">
-                        <div className={`
-                          bg-white rounded-lg p-4 shadow-sm border 
-                          transform transition-all duration-300 group-hover:scale-102
-                          ${level.isCompleted ? 'border-green-200' :
-                            level.isLocked ? 'border-gray-200' : 'border-purple-200'}
-                        `}>
-                          <div className="flex justify-between items-center">
+                      
+                        <div className="flex items-center">
+                          <div
+                            className={`
+                              w-10 h-10 rounded-xl shadow-md flex items-center justify-center 
+                              transform transition-all duration-300 group-hover:scale-110
+                              ${level.isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                                level.isLocked ? 'bg-gray-200' :
+                                  level.danger ? 'bg-gradient-to-br from-red-400 to-red-600' :
+                                    'bg-gradient-to-br from-blue-400 to-purple-500'}
+                            `}
+                          >
+                            {level.isLocked ? (
+                              <Lock className="w-5 h-5 text-gray-500" />
+                            ) : level.isCompleted ? (
+                              <Check className="w-5 h-5 text-white" />
+                            ) : level.danger ? (
+                              <AlertTriangle className="w-5 h-5 text-white" />
+                            ) : (
+                              <Play className="w-5 h-5 text-white" />
+                            )}
+                          </div>
+
+                          {level.danger && !level.isLocked && !level.isCompleted && (
+                            <div className="w-2 h-2 bg-red-500 rounded-full absolute -top-1 -right-1" />
+                          )}
+                        </div>
+                      
+
+
+                      {/* Enhanced Level Content */}
+                      <div
+                        className="ml-4 flex-1 cursor-pointer"
+                        onClick={() => handleLevelClick(level)}
+                      >
+                        <div
+                          className={`
+                            relative overflow-hidden bg-white rounded-xl p-4 shadow-sm border
+                            transform transition-all duration-300
+                            ${level.isCompleted ? 'border-green-200 hover:border-green-300' :
+                              level.isLocked ? 'border-gray-200 cursor-not-allowed' :
+                                level.danger ? 'border-red-200 hover:border-red-300' :
+                                  'border-purple-200 hover:border-purple-300 hover:shadow-md'}
+                          `}
+                        >
+                          <div className="flex justify-between items-center relative z-10">
                             <h3 className="font-medium text-gray-800">{level.name}</h3>
                             <span className="text-xs text-gray-500">7.5 min</span>
                           </div>
+
+                          {/* Completion animation background */}
+                          {level.isCompleted && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-30" />
+                          )}
+
+                          {/* Active level indicator */}
+                          {!level.isLocked && !level.isCompleted && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-20" />
+                          )}
                         </div>
                       </div>
                     </div>
+                    </Tooltip>
                   </div>
                 ))}
 
-                {/* Assessment */}
+                {/* Enhanced Assessment */}
                 <div className="relative ml-5 mb-8">
-                  <div className="flex group">
-                    {/* Assessment Icon */}
-                    <div className={`
-                      w-12 h-12 rounded-lg shadow-sm flex items-center justify-center 
-                      transform transition-all duration-300 group-hover:scale-105
-                      ${section.assessment.isLocked ? 'bg-gray-200' : 'bg-yellow-400'}
-                    `}>
-                      <BookOpen className="w-6 h-6 text-gray-600" />
-                    </div>
-
-                    {/* Assessment Content */}
-                    <div className="ml-4 flex-1">
-                      <div className="bg-yellow-50 rounded-lg p-4 shadow-sm border border-yellow-200">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <h3 className="font-medium text-gray-800">{section.assessment.name}</h3>
-                            <p className="text-xs text-gray-500 mt-1">Complete all levels above to unlock</p>
-                          </div>
-                          <span className="text-xs text-gray-500">{section.assessment.duration}</span>
+                  <Tooltip content={getAssessmentTooltipContent(section.assessment)}>
+                    <div 
+                      className="flex group"
+                      onClick={() => handleAssessmentClick(section.assessment, sectionIndex)}
+                    >
+                      <div className="relative">
+                        <div 
+                          className={`
+                            w-12 h-12 rounded-xl shadow-md flex items-center justify-center 
+                            transform transition-all duration-300 group-hover:scale-110
+                            ${section.assessment.isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                              section.assessment.isLocked ? 'bg-gray-200' :
+                              section.assessment.danger ? 'bg-gradient-to-br from-red-400 to-red-600' :
+                              'bg-gradient-to-br from-yellow-300 to-orange-400'}
+                          `}
+                        >
+                          {section.assessment.isLocked ? (
+                            <BookOpen className="w-6 h-6 text-gray-600" />
+                          ) : section.assessment.isCompleted ? (
+                            <Check className="w-6 h-6 text-white" />
+                          ) : section.assessment.danger ? (
+                            <AlertTriangle className="w-6 h-6 text-white" />
+                          ) : (
+                            <BookOpen className="w-6 h-6 text-white" />
+                          )}
                         </div>
+
+                        
+                      </div>
+
+                      <div className="ml-4 flex-1 cursor-pointer">
+                        <div 
+                          className={`
+                            relative overflow-hidden bg-white rounded-xl p-4 shadow-sm border
+                            transform transition-all duration-300
+                            ${section.assessment.isCompleted ? 'border-green-200 hover:border-green-300' :
+                              section.assessment.isLocked ? 'border-gray-200 cursor-not-allowed' :
+                              section.assessment.danger ? 'border-red-200 hover:border-red-300' :
+                              'border-yellow-200 hover:border-yellow-300 hover:shadow-md'}
+                          `}
+                        >
+                          <div className="flex justify-between items-center relative z-10">
+                            <div>
+                              <h3 className="font-medium text-gray-800">{section.assessment.name}</h3>
+                              <p className="text-xs text-gray-500 mt-1">
+                                {section.assessment.isLocked ? 'Complete all levels above to unlock' : 
+                                 section.assessment.isCompleted ? 'Assessment completed' :
+                                 section.assessment.danger ? 'Hard Luck ! Master your lacking concepts and attempt again' :
+                                 'Ready to test your knowledge?'}
+                              </p>
+                            </div>
+                            <span className="text-xs text-gray-500">{section.assessment.duration}</span>
+                          </div>
+                          
+                          {section.assessment.isCompleted && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-30" />
+                          )}
+                          {!section.assessment.isLocked && !section.assessment.isCompleted && !section.assessment.danger && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-yellow-50 to-orange-50 opacity-20" />
+                          )}
+                          {section.assessment.danger && !section.assessment.isLocked && !section.assessment.isCompleted && (
+                            <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-pink-50 opacity-20" />
+                          )}
+                        </div>
+                        {section.assessment.danger && !section.assessment.isLocked && !section.assessment.isCompleted && (
+                          <div className="w-2 h-2 bg-red-500 rounded-full absolute -top-1 -right-1" />
+                        )}
                       </div>
                     </div>
-                  </div>
+                  </Tooltip>
                 </div>
               </div>
             ))}
