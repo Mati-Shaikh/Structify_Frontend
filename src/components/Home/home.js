@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
@@ -173,11 +173,12 @@ const Card = ({ title, description, topics, logoSrc }) => {
 
 const HomePage = () => {
   const days = [
-    { day: "Th", active: true },
-    { day: "F", active: false },
-    { day: "S", active: false },
-    { day: "Su", active: false },
-    { day: "M", active: false },
+    { day: "Th", active: false, completed: true },
+    { day: "F", active: false, completed: true },
+    { day: "S", active: true, completed: false },
+    { day: "Su", active: false, completed: false },
+    { day: "M", active: false, completed: false },
+    { day: "T", active: false, completed: false },
   ];
 
   const [currentStatus, setCurrentStatus] = useState(null);
@@ -256,15 +257,14 @@ const HomePage = () => {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-300">
               <div className="flex justify-between items-start mb-6">
                 <div className="space-y-2">
-                  <div className="text-6xl font-bold">0</div>
+                  <div className="text-6xl font-bold">2</div>
                   <p className="text-gray-700">
-                    Solve <span className="font-semibold">3 problems</span> to
-                    start a streak
+                    Play <span className="font-semibold">games</span> to
+                    continue your streak
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <div className="w-6 h-6 bg-gray-100 rounded"></div>
-                  <div className="w-6 h-6 bg-gray-100 rounded"></div>
+                  <Flame className="w-6 h-6 text-orange-500" />
                 </div>
               </div>
 
@@ -274,24 +274,37 @@ const HomePage = () => {
                   <div key={index} className="text-center">
                     <div
                       className={`w-12 h-12 rounded-full border-2 mb-2 flex items-center justify-center
-                    ${item.active ? "border-gray-800" : "border-gray-200"}`}
+          ${item.completed ? "border-green-500 bg-green-50" :
+                          item.active ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
                     >
                       <svg
-                        className="w-6 h-6 text-gray-400"
+                        className={`w-6 h-6 ${item.completed ? "text-green-500" :
+                          item.active ? "text-blue-500" : "text-gray-400"
+                          }`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
+                        {item.completed ? (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        ) : (
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
+                        )}
                       </svg>
                     </div>
                     <span
-                      className={`text-sm ${item.active ? "font-medium" : "text-gray-400"
+                      className={`text-sm ${item.completed ? "font-medium text-green-500" :
+                        item.active ? "font-medium text-blue-500" : "text-gray-400"
                         }`}
                     >
                       {item.day}
@@ -315,13 +328,15 @@ const HomePage = () => {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold">UNLOCK LEAGUES</h3>
-                  <p className="text-gray-500">70 of 175 XP</p>
+                  <h3 className="font-semibold">COINS EARNED</h3>
+                  <p className="text-gray-500 flex items-center gap-1">
+                    <span className="text-yellow-600 font-medium">280</span> coins
+                  </p>
                 </div>
               </div>
             </div>
@@ -373,7 +388,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="flex-col mt-8 mb-16 py-16">
-        
+
         <div className="flex flex-wrap justify-between  gap-8 mx-48 px-6">
           <Card
             title="Linked List"
