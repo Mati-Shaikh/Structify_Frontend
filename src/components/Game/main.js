@@ -8,7 +8,7 @@ import { level4 } from "./level4";
 import { level5 } from "./level5";
 import { level6 } from "./level6";
 
-export default function main() {
+export default function main(level) {
   const k = kaplay({
     global: false,
     width: 1000,
@@ -70,6 +70,6 @@ export default function main() {
   level6(k);
   end(k);
 
-  k.go("level4");
+  k.go(level);
 });
 }

@@ -563,7 +563,7 @@ export function level3(k) {
               setTimeout(() => {
                 if (score === 20) {
                   k.play("completed", { volume: 0.8 });
-                  k.go('end', { nextLevel: 'level4' })
+                  k.go('end', {nextLevel: 'level4', currentLevel: 'level3' })
                 }
                 gameState = "SELECT_NUMBER";
                 insertionIndex = Math.floor(Math.random() * (bogies.length - 1)) + 1;

@@ -422,7 +422,7 @@ export function level4(k) {
                                     setTimeout(() => {
                                         if (score === 30) {
                                             k.play("completed", { volume: 0.8 });
-                                            k.go('end', { nextLevel: 'level5' })
+                                            k.go('end', {nextLevel: 'level5', currentLevel: 'level4' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
                                         for (let i = 0; i <= 9; i++) {
@@ -448,7 +448,7 @@ export function level4(k) {
                                     setTimeout(() => {
                                         if (score === 30) {
                                             k.play("completed", { volume: 1.8 });
-                                            k.go('end', { nextLevel: 'level5' })
+                                            k.go('end', {nextLevel: 'level5', currentLevel: 'level4' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
                                         for (let i = 0; i <= 10; i++) {

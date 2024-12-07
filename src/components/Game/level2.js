@@ -367,7 +367,7 @@ export function level2(k) {
             setTimeout(() => {
               if (score === 30) {
                 k.play("completed", { volume: 0.8 });
-                k.go('end', { nextLevel: 'level3' })
+                k.go('end', {nextLevel: 'level3', currentLevel: 'level2' })
               }
               gameState = "SELECT_NUMBER";
             }, 2000);

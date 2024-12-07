@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import main from './main';
 import './Game.css';
 
-const Game = () => {
+const Game = ({ level }) => {
     const [gamestarted, setGameStarted] = useState(false)
     const handleStartGame = () => {
         setGameStarted(true)
-        main();
+        main(level);
     };
 
     return (

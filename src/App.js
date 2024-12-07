@@ -17,6 +17,7 @@ import ProtectedRouteWelcome from "./components/ProtectedRoute/ProtectedRouteWel
 import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/ProtectedRouteInitialQuestions";
 import LearningPath from "./components/LearningPath/LearningPath";
 import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
+import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
 
 const App = () => {
   return (
@@ -42,7 +43,7 @@ const App = () => {
           path="/profile"
           element={<ProtectedRoute element={ProfileManagement} />}
         />
-        <Route path="/game" element={<ProtectedRoute element={Game} />} />
+        
 
 
         <Route
@@ -58,6 +59,12 @@ const App = () => {
           element={<ProtectedRouteAssessment element={Assessment} assessmentId="1"/>}
         />
 
+        <Route path="/game/level1" element={<ProtectedRouteGame element={Game} level="level1" />} />
+        <Route path="/game/level2" element={<ProtectedRouteGame element={Game} level="level2" />} />
+        <Route path="/game/level3" element={<ProtectedRouteGame element={Game} level="level3" />} />
+        <Route path="/game/level4" element={<ProtectedRouteGame element={Game} level="level4" />} />
+        <Route path="/game/level5" element={<ProtectedRouteGame element={Game} level="level5" />} />
+        <Route path="/game/level6" element={<ProtectedRouteGame element={Game} level="level6" />} />
         
       </Routes>
     </Router>
