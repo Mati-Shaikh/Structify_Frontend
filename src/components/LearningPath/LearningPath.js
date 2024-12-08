@@ -40,7 +40,7 @@ const Navbar = () => {
         {/* Structify Logo and Home Link */}
         <div className="flex items-center ml-8">
           <a
-            href="/"
+            href="/home"
             style={{ fontFamily: "Atma, sans-serif" }}
             className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600"
           >
