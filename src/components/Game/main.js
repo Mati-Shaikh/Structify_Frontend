@@ -7,6 +7,9 @@ import { level3 } from "./level3";
 import { level4 } from "./level4";
 import { level5 } from "./level5";
 import { level6 } from "./level6";
+import { level7 } from "./level7";
+import { level8 } from "./level8";
+import { level9 } from "./level9";
 
 export default function main(level) {
   const k = kaplay({
@@ -39,6 +42,7 @@ export default function main(level) {
   k.loadSprite("background", "/game/sprites/hills3.png");
   k.loadSprite("background2", "/game/sprites/hills2.png");
   k.loadSprite("background3", "/game/sprites/hills4.png");
+  k.loadSprite("bomb", "/game/sprites/bomb.png");
 
   //Loading sounds
   k.loadSound("goalSound", "/game/sound/coin.wav");
@@ -49,6 +53,7 @@ export default function main(level) {
   k.loadSound("attached", "/game/sound/attached.wav");
   k.loadSound("appear", "/game/sound/appear.wav");
   k.loadSound("lose", "/game/sound/lose.wav");
+  k.loadSound("bomb", "/game/sound/bomb.wav");
   k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
 
   k.onLoad(() => {
@@ -68,6 +73,9 @@ export default function main(level) {
   level4(k);
   level5(k);
   level6(k);
+  level7(k);
+  level8(k);
+  level9(k);
   end(k);
 
   k.go(level);
