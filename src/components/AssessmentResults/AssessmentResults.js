@@ -2,122 +2,122 @@ import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut, Book } from "lucide-react";
 import { useLocation, Navigate } from 'react-router-dom';
-import { 
+import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { AlertTriangle, Trophy, Brain, BookOpen } from 'lucide-react';
+import { AlertTriangle, Trophy, Brain, BookOpen, ChevronRight } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const navigate = useNavigate(); // Initialize useNavigate
-  
-  
-    const handleLogout = () => {
-      // Clear local storage
-      localStorage.clear();
-      // navigate to login page
-      navigate("/");
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
+
+
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.clear();
+    // navigate to login page
+    navigate("/");
+  };
+
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 0;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
     };
-  
-  
-  
-    useEffect(() => {
-      const handleScroll = () => {
-        const isScrolled = window.scrollY > 0;
-        if (isScrolled !== scrolled) {
-          setScrolled(isScrolled);
-        }
-      };
-  
-      window.addEventListener('scroll', handleScroll);
-  
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
-    }, [scrolled]);
-  
-  
-    return (
-      <nav className={`fixed top-0 left-0 right-0 z-50 bg-white p-4 ${scrolled ? 'shadow-md' : ''
-        } `}>
-        <div className="container mx-auto flex justify-between">
-          {/* Structify Logo and Home Link */}
-          <div className="flex items-center ml-8">
-            <a
-              href="/"
-              style={{ fontFamily: "Atma, sans-serif" }}
-              className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600"
-            >
-              Structify
-            </a>
-          </div>
-  
-          {/* Hamburger Menu */}
-          <div className="relative mr-8 ">
-            <button
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
+
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 bg-white p-4 ${scrolled ? 'shadow-md' : ''
+      } `}>
+      <div className="container mx-auto flex justify-between">
+        {/* Structify Logo and Home Link */}
+        <div className="flex items-center ml-8">
+          <a
+            href="/"
+            style={{ fontFamily: "Atma, sans-serif" }}
+            className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600"
+          >
+            Structify
+          </a>
+        </div>
+
+        {/* Hamburger Menu */}
+        <div className="relative mr-8 ">
+          <button
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+            className="text-black p-2 rounded hover:bg-white transition-colors"
+          >
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
+          </button>
+
+          {/* Dropdown Menu */}
+
+          {isOpen && (
+            <div
+              className="absolute right-0 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-10"
               onMouseEnter={() => setIsOpen(true)}
               onMouseLeave={() => setIsOpen(false)}
-              className="text-black p-2 rounded hover:bg-white transition-colors"
             >
-              {isOpen ? <X size={32} /> : <Menu size={32} />}
-            </button>
-  
-            {/* Dropdown Menu */}
-  
-            {isOpen && (
-              <div
-                className="absolute right-0 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-10"
-                onMouseEnter={() => setIsOpen(true)}
-                onMouseLeave={() => setIsOpen(false)}
-              >
-                <div className="py-2">
-                  <a
-                    href="/profile"
-                    className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full mr-3">
-                      <User size={18} className="text-blue-600" />
-                    </span>
-                    Account
-                  </a>
-                  <a
-                    href="/learningPath"
-                    className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-full mr-3">
-                      <Book size={18} className="text-yellow-600" />
-                    </span>
-                    Learning Plan
-                  </a>
-                  <a
-                    href="/"
-                    className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full mr-3">
-                      <Settings size={18} className="text-green-600" />
-                    </span>
-                    Settings
-                  </a>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <span className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-full mr-3">
-                      <LogOut size={18} className="text-red-600" />
-                    </span>
-                    Log out
-                  </button>
-                </div>
+              <div className="py-2">
+                <a
+                  href="/profile"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full mr-3">
+                    <User size={18} className="text-blue-600" />
+                  </span>
+                  Account
+                </a>
+                <a
+                  href="/learningPath"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-full mr-3">
+                    <Book size={18} className="text-yellow-600" />
+                  </span>
+                  Learning Plan
+                </a>
+                <a
+                  href="/"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full mr-3">
+                    <Settings size={18} className="text-green-600" />
+                  </span>
+                  Settings
+                </a>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-red-100 rounded-full mr-3">
+                    <LogOut size={18} className="text-red-600" />
+                  </span>
+                  Log out
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
-      </nav>
-    );
-  };
+      </div>
+    </nav>
+  );
+};
 
 const AssessmentResults = () => {
   const location = useLocation();
@@ -136,13 +136,13 @@ const AssessmentResults = () => {
   const difficultyData = Object.entries(results.difficultyStats).map(([key, value]) => ({
     name: key,
     correct: value.correct,
-    incorrect: value.total - value.correct,
+    total: value.total
   }));
 
   const scorePercentage = (results.score / results.totalQuestions) * 100;
-  const scoreColor = scorePercentage >= 70 ? 'text-green-500' : 
-                    scorePercentage >= 50 ? 'text-yellow-500' : 
-                    'text-red-500';
+  const scoreColor = scorePercentage >= 70 ? 'text-green-500' :
+    scorePercentage >= 50 ? 'text-yellow-500' :
+      'text-red-500';
 
   return (
     <div className="min-h-screen bg-white pb-8">
@@ -150,7 +150,7 @@ const AssessmentResults = () => {
       <div className="max-w-7xl mx-auto pt-32">
         {/* Header Section */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-800">Assessment Results</h1>
+          <h1 className="text-4xl font-bold mb-4 text-gray-800">Assessment Results</h1>
           <p className="text-gray-600 mt-2">Here's a detailed breakdown of your performance</p>
         </div>
 
@@ -221,7 +221,7 @@ const AssessmentResults = () => {
                 <PieChart>
                   <Pie
                     data={difficultyData}
-                    dataKey="correct"
+                    dataKey="total"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
@@ -233,7 +233,10 @@ const AssessmentResults = () => {
                     ))}
                   </Pie>
                   <Legend />
-                  <Tooltip />
+                  <Tooltip formatter={(value, name, props) => [
+                    `Total: ${value}, Correct: ${props.payload.correct}`,
+                    name
+                  ]} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -262,6 +265,17 @@ const AssessmentResults = () => {
             </div>
           </div>
         )}
+        <div className="mt-8 text-end">
+          <a
+            href="/learningPath"
+            className="inline-flex items-center bg-green-500 text-white px-5 py-4 rounded-full text-lg font-semibold hover:bg-green-600"
+          >
+            
+            Go to Learning Path
+            <ChevronRight className="w-7 h-7 ml-2 text-white" />
+          </a>
+          
+        </div>
       </div>
     </div>
   );

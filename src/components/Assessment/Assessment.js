@@ -48,11 +48,12 @@ const Assessment = ({ assessmentId }) => {
     const fetchQuestions = async () => {
       try {
         const response = await fetch("http://localhost:3005/api/questions/random", {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             token: localStorage.getItem("token"),
           },
+          body: JSON.stringify({ assessmentId: assessmentId }),
         });
         const data = await response.json();
         // Transform the questions to match the slides format
@@ -69,7 +70,13 @@ const Assessment = ({ assessmentId }) => {
 
         const allSlides = [
           {
-            title: "Let's gauge your knowledge of Insertion in Linked List!",
+            title: `Let's gauge your knowledge of ${
+              assessmentId === "1" 
+              ? "Insertion" 
+              : assessmentId === "2"
+              ? "Traversal"
+              : "Deletion"
+            } in Linked List!`,
             subtitle: "We'll test your understanding with some specific questions",
             type: "intro",
           },
@@ -90,7 +97,7 @@ const Assessment = ({ assessmentId }) => {
     };
 
     fetchQuestions();
-  }, []);
+  }, [assessmentId]);
 
   const handleOptionSelect = (slideIndex, optionId) => {
     if (answeredSlides[slideIndex]) return;

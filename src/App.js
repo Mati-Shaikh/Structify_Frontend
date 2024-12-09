@@ -58,6 +58,14 @@ const App = () => {
           path="/assessment1"
           element={<ProtectedRouteAssessment element={Assessment} assessmentId="1"/>}
         />
+        <Route
+          path="/assessment2"
+          element={<ProtectedRouteAssessment element={Assessment} assessmentId="2"/>}
+        />
+        <Route
+          path="/assessment3"
+          element={<ProtectedRouteAssessment element={Assessment} assessmentId="3"/>}
+        />
 
         <Route path="/game/level1" element={<ProtectedRouteGame element={Game} level="level1" />} />
         <Route path="/game/level2" element={<ProtectedRouteGame element={Game} level="level2" />} />
