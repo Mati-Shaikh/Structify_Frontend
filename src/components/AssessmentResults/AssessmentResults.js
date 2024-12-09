@@ -141,9 +141,7 @@ const AssessmentResults = () => {
   }));
 
   const scorePercentage = (results.score / results.totalQuestions) * 100;
-  const scoreColor = scorePercentage >= 70 ? 'text-green-500' :
-    scorePercentage >= 50 ? 'text-yellow-500' :
-      'text-red-500';
+  const scoreColor = scorePercentage >= 90 ? 'text-green-500' : 'text-red-500';
 
   return (
     <div className="min-h-screen bg-white pb-8">
