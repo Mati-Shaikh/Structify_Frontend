@@ -136,7 +136,8 @@ const AssessmentResults = () => {
   const difficultyData = Object.entries(results.difficultyStats).map(([key, value]) => ({
     name: key,
     correct: value.correct,
-    total: value.total
+    total: value.total,
+    incorrect: value.total - value.correct
   }));
 
   const scorePercentage = (results.score / results.totalQuestions) * 100;
@@ -229,12 +230,15 @@ const AssessmentResults = () => {
                     label
                   >
                     {difficultyData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={['#22c55e', '#3b82f6', '#f59e0b'][index]} />
+                      <Cell key={`cell-${index}`} fill={['#f59e0b', '#22c55e', '#3b82f6'][index]} />
                     ))}
                   </Pie>
-                  <Legend />
+                  <Legend 
+                    iconType="circle"
+                    iconSize={10} 
+                  />
                   <Tooltip formatter={(value, name, props) => [
-                    `Total: ${value}, Correct: ${props.payload.correct}`,
+                    `Correct: ${props.payload.correct}, Incorrect: ${props.payload.incorrect}`,
                     name
                   ]} />
                 </PieChart>
