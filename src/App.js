@@ -18,7 +18,7 @@ import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/Protecte
 import LearningPath from "./components/LearningPath/LearningPath";
 import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
-//hello
+
 const App = () => {
   return (
     <Router>
