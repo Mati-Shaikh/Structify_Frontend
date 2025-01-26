@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { User, Settings, LogOut } from "lucide-react";
+import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
-import { ChevronRight, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-//hello
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -172,37 +170,63 @@ const Card = ({ title, description, topics, logoSrc }) => {
 
 
 const HomePage = () => {
-  const days = [
-    { day: "Th", active: false, completed: true },
-    { day: "F", active: false, completed: true },
-    { day: "S", active: true, completed: false },
-    { day: "Su", active: false, completed: false },
-    { day: "M", active: false, completed: false },
-    { day: "T", active: false, completed: false },
-  ];
 
+  const navigate = useNavigate();
   const [currentStatus, setCurrentStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const navigate = useNavigate();
-
+  const [weekStreak, setWeekStreak] = useState(0);
+  const [loginDates, setLoginDates] = useState([]);
+  const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
 
   useEffect(() => {
-    const fetchLearningPath = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem('token');
 
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3005/api/users/learningPath', {
+        
+        // Fetch Learning Path
+        const learningPathResponse = await fetch('http://localhost:3005/api/users/learningPath', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             token: token,
           },
         });
-        const data = await response.json();
-        setCurrentStatus(data.currentStatus);
+        const learningPathData = await learningPathResponse.json();
+        setCurrentStatus(learningPathData.currentStatus);
+
+        // Fetch Week Streak
+        const weekStreakResponse = await fetch('http://localhost:3005/api/users/weekStreak', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
+        });
+        const weekStreakData = await weekStreakResponse.json();
+        setLoginDates(weekStreakData.loginDates);
+        
+        // Calculate continuous streak from most recent dates
+        const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
+        const today = new Date().toISOString().split('T')[0];
+        
+        let streak = 0;
+        for (const date of sortedDates) {
+          const currentDate = new Date(date);
+          const testDate = new Date(today);
+          testDate.setDate(testDate.getDate() - streak);
+          
+          if (currentDate.toISOString().split('T')[0] === testDate.toISOString().split('T')[0]) {
+            streak++;
+          } else {
+            break;
+          }
+        }
+        
+        setWeekStreak(streak);
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -210,19 +234,40 @@ const HomePage = () => {
       }
     };
 
-    fetchLearningPath();
+    fetchData();
   }, []);
 
+  const getDayStatus = (offset = 0) => {
+    const today = new Date();
+    const dayNames = ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'];
+    
+    const fullWeekDays = [1, 2, 3, 4, 5, 6, 0].map(num => {
+      const date = new Date(today);
+      date.setDate(today.getDate() - (today.getDay() - num + 7) % 7 - (7 * offset));
+      return {
+        fullDate: date.toISOString().split('T')[0],
+        displayDate: date.getDate(),
+        day: dayNames[num],
+        isToday: date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+      };
+    });
+  
+    return fullWeekDays.map((dateObj) => ({
+      day: dateObj.day,
+      date: dateObj.displayDate,
+      fullDate: dateObj.fullDate,
+      completed: loginDates.includes(dateObj.fullDate),
+      active: dateObj.isToday
+    }));
+  };
+  
+  const days = getDayStatus(currentWeekOffset);
 
   if (loading) {
     return (
       <div className="flex-col gap-4 mt-64 w-full flex items-center justify-center">
-        <div
-          className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full"
-        >
-          <div
-            className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"
-          ></div>
+        <div className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-blue-400 rounded-full">
+          <div className="w-16 h-16 border-4 border-transparent text-green-400 text-2xl animate-spin flex items-center justify-center border-t-green-400 rounded-full"></div>
         </div>
       </div>
     );
@@ -231,7 +276,7 @@ const HomePage = () => {
   if (error) {
     return (
       <div className="flex h-screen items-center justify-center text-red-500">
-        Error loading current Status{error}
+        Error loading current Status: {error}
       </div>
     );
   }
@@ -257,10 +302,14 @@ const HomePage = () => {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-300">
               <div className="flex justify-between items-start mb-6">
                 <div className="space-y-2">
-                  <div className="text-6xl font-bold">2</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-6xl font-bold">{weekStreak}</div>
+                    <div className="text-xl text-gray-500">
+                      {weekStreak === 1 ? 'day' : 'days'} streak
+                    </div>
+                  </div>
                   <p className="text-gray-700">
-                    Play <span className="font-semibold">games</span> to
-                    continue your streak
+                    Keep learning to <span className="font-semibold text-green-600">maintain your streak</span>
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -268,49 +317,68 @@ const HomePage = () => {
                 </div>
               </div>
 
-              {/* Days Progress */}
-              <div className="flex justify-between items-center">
-                {days.map((item, index) => (
-                  <div key={index} className="text-center">
-                    <div
-                      className={`w-12 h-12 rounded-full border-2 mb-2 flex items-center justify-center
-          ${item.completed ? "border-green-500 bg-green-50" :
+              <div className="flex items-center justify-between">
+                <button 
+                  onClick={() => setCurrentWeekOffset(prev => prev + 1)}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <ChevronLeft className="text-gray-600" />
+                </button>
+                
+                <div className="flex justify-between items-center space-x-4">
+                  {days.map((item, index) => (
+                    <div key={index} className="text-center group relative">
+                      <div
+                        className={`w-11 h-11 rounded-full border-2 mb-2 flex items-center justify-center
+                          ${item.completed ? "border-green-500 bg-green-50" :
                           item.active ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
-                    >
-                      <svg
-                        className={`w-6 h-6 ${item.completed ? "text-green-500" :
-                          item.active ? "text-blue-500" : "text-gray-400"
-                          }`}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
                       >
-                        {item.completed ? (
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        ) : (
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
-                        )}
-                      </svg>
+                        <div className="flex flex-col items-center">
+                          <span className="text-xs">{item.date}</span>
+                          <svg
+                            className={`w-4 h-4 ${item.completed ? "text-green-500" :
+                              item.active ? "text-blue-500" : "text-gray-400"
+                              }`}
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            {item.completed ? (
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            ) : (
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 10V3L4 14h7v7l9-11h-7z"
+                              />
+                            )}
+                          </svg>
+                        </div>
+                      </div>
+                      <span
+                        className={`text-sm ${item.completed ? "font-medium text-green-500" :
+                          item.active ? "font-medium text-blue-500" : "text-gray-400"
+                          }`}
+                      >
+                        {item.day}
+                      </span>
                     </div>
-                    <span
-                      className={`text-sm ${item.completed ? "font-medium text-green-500" :
-                        item.active ? "font-medium text-blue-500" : "text-gray-400"
-                        }`}
-                    >
-                      {item.day}
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                  
+                </div>
+                
+                <button 
+                  onClick={() => setCurrentWeekOffset(prev => Math.max(0, prev - 1))}
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                >
+                  <ChevronRight className="text-gray-600" />
+                </button>
               </div>
             </div>
 
