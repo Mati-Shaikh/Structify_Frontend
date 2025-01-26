@@ -4,7 +4,7 @@ import { User, Settings, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 import { ChevronRight, Flame } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+//hello
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
