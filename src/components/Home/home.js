@@ -209,18 +209,20 @@ const HomePage = () => {
         setLoginDates(weekStreakData.loginDates);
         
         // Calculate continuous streak from most recent dates
-        const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
-        const today = new Date().toISOString().split('T')[0];
-        
         let streak = 0;
+        const today = new Date().toISOString().split('T')[0];
+        const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
+        
         for (const date of sortedDates) {
           const currentDate = new Date(date);
           const testDate = new Date(today);
           testDate.setDate(testDate.getDate() - streak);
           
+          // Only count if it's a consecutive date from the most recent login
           if (currentDate.toISOString().split('T')[0] === testDate.toISOString().split('T')[0]) {
             streak++;
           } else {
+            // Stop counting if there's a break in consecutive dates
             break;
           }
         }
@@ -257,7 +259,12 @@ const HomePage = () => {
       date: dateObj.displayDate,
       fullDate: dateObj.fullDate,
       completed: loginDates.includes(dateObj.fullDate),
-      active: dateObj.isToday
+      active: dateObj.isToday,
+      hoverText: loginDates.includes(dateObj.fullDate) 
+        ? "Great job! You completed your learning this day." 
+        : dateObj.isToday 
+          ? "Today's learning awaits!" 
+          : "No learning activity this day"
     }));
   };
   
@@ -368,6 +375,16 @@ const HomePage = () => {
                       >
                         {item.day}
                       </span>
+                      {/* Tooltip */}
+                      <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
+                        <div className="bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                          {item.hoverText}
+                        </div>
+                        <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 
+                          w-0 h-0 border-l-4 border-l-transparent 
+                          border-r-4 border-r-transparent 
+                          border-t-4 border-t-gray-800"></div>
+                      </div>
                     </div>
                   ))}
                   
@@ -381,33 +398,61 @@ const HomePage = () => {
                 </button>
               </div>
             </div>
-
-            {/* XP Progress Card */}
-            <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-yellow-800"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+            
+            <div className="flex justify-between">
+              {/* XP Progress Card */}
+              <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm flex-1 mr-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-yellow-800"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">COINS</h3>
+                    <p className="text-gray-500 flex items-center gap-1">
+                      <span className="text-yellow-600 font-medium">280</span> coins
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">COINS EARNED</h3>
-                  <p className="text-gray-500 flex items-center gap-1">
-                    <span className="text-yellow-600 font-medium">280</span> coins
-                  </p>
+              </div>
+              <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm flex-1">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-yellow-800"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">COINS EARNED</h3>
+                    <p className="text-gray-500 flex items-center gap-1">
+                      <span className="text-yellow-600 font-medium">280</span> coins
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
+            
           </div>
 
           {/* Right Column */}
