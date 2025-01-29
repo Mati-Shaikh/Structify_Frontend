@@ -483,7 +483,7 @@ const HomePage = () => {
                   <div>
                     <h3 className="font-semibold">BADGES EARNED</h3>
                     <p className="text-gray-500 flex items-center gap-1">
-                      <span className="text-purple-600 font-medium">2</span> unlocked
+                      <span className="text-purple-600 font-medium">3</span> unlocked
                     </p>
                   </div>
                 </div>

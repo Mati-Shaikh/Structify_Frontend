@@ -203,87 +203,117 @@ const Achievements = () => {
   }
 
   return (
-    <div className="min-h-screen text-center">
+    <div className="min-h-screen text-center ">
       <Navbar />
-      <div className="max-w-6xl mx-auto p-8 mt-24">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-6xl mx-auto p-8 mt-24"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {/* Coins Card */}
-          <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-yellow-400 rounded-xl flex items-center justify-center">
-                <Star size={32} className="text-yellow-800" />
+          {/* Coins Card - Enhanced */}
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="bg-gradient-to-br from-yellow-400 to-yellow-300 rounded-2xl p-6 shadow-lg overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"/>
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <Star size={32} className="text-yellow-800 fill-yellow-100 drop-shadow" />
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-700">
-                  Coins Earned
-                </h3>
-                <p className="text-4xl font-bold text-yellow-600">
+              <div className="text-left">
+                <h3 className="text-xl font-bold text-yellow-900 mb-1">Coins Earned</h3>
+                <p className="text-4xl font-black text-white drop-shadow-md">
                   {coinCount}
+                  <span className="text-lg font-semibold ml-2 text-yellow-100">coins</span>
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Badges Summary Card */}
-          <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center">
-                <Unlock size={32} className="text-purple-600" />
+          {/* Badges Summary Card - Enhanced */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl p-6 shadow-lg relative overflow-hidden"
+          >
+            <div className="absolute inset-0 opacity-10 bg-white" />
+            <div className="flex items-center gap-4 relative z-10">
+              <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                <Award size={32} className="text-white" />
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-700">
-                  Badges Progress
-                </h3>
-                <p className="text-4xl font-bold text-purple-600">
-                  {unlockedBadges}{" "}
-                  <span className="text-lg text-gray-500">/ {totalBadges}</span>
+              <div className="text-left">
+                <h3 className="text-xl font-bold text-purple-100 mb-1">Badges Progress</h3>
+                <p className="text-4xl font-black text-white drop-shadow-md">
+                  {unlockedBadges}
+                  <span className="text-lg font-semibold text-purple-200">/{totalBadges}</span>
                 </p>
               </div>
             </div>
-          </div>
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-purple-800/20">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${(unlockedBadges / totalBadges) * 100}%` }}
+                transition={{ duration: 1 }}
+                className="h-full bg-gradient-to-r from-purple-300 to-white"
+              />
+            </div>
+          </motion.div>
         </div>
 
-        {/* Badges Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {/* Badges Grid - Enhanced */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {badges.map((badge, index) => (
-            <div
+            <motion.div
               key={index}
-              className={`
-                rounded-xl p-4 text-center transition-all duration-300
-                ${
-                  badge.unlocked
-                    ? "bg-white border-2 border-green-200 shadow-md"
-                    : "bg-gray-100 border border-gray-300 opacity-70"
-                }
-                `}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className={`group relative rounded-xl p-6 transition-all duration-300 overflow-hidden ${
+                badge.unlocked
+                  ? "bg-white border border-gray-200 shadow-lg hover:shadow-xl"
+                  : "bg-gray-50 border border-gray-200"
+              }`}
             >
-              <div className="flex justify-center mb-4">
-                {badge.unlocked ? (
-                  <Unlock size={48} className="text-green-600" />
-                ) : (
-                  <Lock size={48} className="text-gray-400" />
-                )}
+              <div className="relative z-10">
+                <div className="flex justify-center mb-4">
+                  {badge.unlocked ? (
+                    <div className="relative">
+                      <Award size={48} className="text-green-600 fill-green-100 drop-shadow" />
+                      <div className="absolute inset-0 animate-pulse">
+                        <Star size={20} className="absolute top-0 right-0 text-yellow-400" />
+                      </div>
+                    </div>
+                  ) : (
+                    <Lock size={48} className="text-gray-400" />
+                  )}
+                </div>
+                <h4
+                  className={`font-bold mb-2 text-lg ${
+                    badge.unlocked ? "text-gray-800" : "text-gray-400"
+                  }`}
+                >
+                  {badge.name}
+                </h4>
+                <p
+                  className={`text-sm ${
+                    badge.unlocked ? "text-gray-600" : "text-gray-400"
+                  }`}
+                >
+                  {badge.description}
+                </p>
               </div>
-              <h4
-                className={`
-                font-semibold mb-2 
-                ${badge.unlocked ? "text-green-800" : "text-gray-500"}
-                `}
-              >
-                {badge.name}
-              </h4>
-              <p
-                className={`
-                text-sm 
-                ${badge.unlocked ? "text-green-600" : "text-gray-400"}
-                `}
-              >
-                {badge.description}
-              </p>
-            </div>
+              
+              {badge.unlocked && (
+                <>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-green-100/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </>
+              )}
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
