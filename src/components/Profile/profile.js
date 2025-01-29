@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { User, Settings, LogOut } from 'lucide-react';
+import { User, Settings, LogOut, Award, Book } from 'lucide-react';
 import { motion } from "framer-motion";
 //import { FaEnvelope, FaBirthdayCake, FaSave } from 'react-icons/fa';
 import { Menu, X } from "lucide-react";
@@ -56,6 +56,24 @@ const Navbar = () => {
                     <User size={18} className="text-blue-600" />
                   </span>
                   Account
+                </a>
+                <a
+                  href="/learningPath"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-full mr-3">
+                    <Book size={18} className="text-yellow-600" />
+                  </span>
+                  Learning Plan
+                </a>
+                <a
+                  href="/achievements"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full mr-3">
+                    <Award size={18} className="text-purple-600" />
+                  </span>
+                  Achievements
                 </a>
                 <a href="/" className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                   <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full mr-3">

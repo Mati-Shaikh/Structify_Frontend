@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut } from "lucide-react";
+import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut, Book, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -76,6 +76,24 @@ const Navbar = () => {
                     <User size={18} className="text-blue-600" />
                   </span>
                   Account
+                </a>
+                <a
+                  href="/learningPath"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-yellow-100 rounded-full mr-3">
+                    <Book size={18} className="text-yellow-600" />
+                  </span>
+                  Learning Plan
+                </a>
+                <a
+                  href="/achievements"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full mr-3">
+                    <Award size={18} className="text-purple-600" />
+                  </span>
+                  Achievements
                 </a>
                 <a
                   href="/"
@@ -178,6 +196,7 @@ const HomePage = () => {
   const [weekStreak, setWeekStreak] = useState(0);
   const [loginDates, setLoginDates] = useState([]);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -213,16 +232,14 @@ const HomePage = () => {
         const today = new Date().toISOString().split('T')[0];
         const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
         
-        for (const date of sortedDates) {
-          const currentDate = new Date(date);
-          const testDate = new Date(today);
-          testDate.setDate(testDate.getDate() - streak);
-          
-          // Only count if it's a consecutive date from the most recent login
-          if (currentDate.toISOString().split('T')[0] === testDate.toISOString().split('T')[0]) {
+        let currentDate = new Date(today);
+        // Start checking from today backwards
+        while (streak < sortedDates.length) {
+          const dateToCheck = currentDate.toISOString().split('T')[0];
+          if (sortedDates.includes(dateToCheck)) {
             streak++;
+            currentDate.setDate(currentDate.getDate() - 1);
           } else {
-            // Stop counting if there's a break in consecutive dates
             break;
           }
         }
@@ -243,13 +260,15 @@ const HomePage = () => {
     const today = new Date();
     const dayNames = ['Su', 'M', 'T', 'W', 'Th', 'F', 'S'];
     
-    const fullWeekDays = [1, 2, 3, 4, 5, 6, 0].map(num => {
+    // Create array for week days in chronological order (Monday to Sunday)
+    const fullWeekDays = Array.from({ length: 7 }, (_, index) => {
       const date = new Date(today);
-      date.setDate(today.getDate() - (today.getDay() - num + 7) % 7 - (7 * offset));
+      // Calculate the date for each day of the week
+      date.setDate(today.getDate() - today.getDay() + index - (7 * offset));
       return {
         fullDate: date.toISOString().split('T')[0],
         displayDate: date.getDate(),
-        day: dayNames[num],
+        day: dayNames[index],
         isToday: date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
       };
     });
@@ -319,15 +338,39 @@ const HomePage = () => {
                     Keep learning to <span className="font-semibold text-green-600">maintain your streak</span>
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Flame className="w-6 h-6 text-orange-500" />
+
+                <div 
+                  className="relative group"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                  <Flame 
+                    className={`w-6 h-6 transition-all duration-300 transform ${
+                      isHovered ? 'text-orange-500 scale-125 fill-current animate-pulse' : 'text-orange-500'
+                    }`}
+                  />
+                  {isHovered && (
+                    <>
+                      <div className="absolute -top-1 -left-1 right-1 bottom-1">
+                        <Flame 
+                          className="w-8 h-8 text-orange-300 animate-ping opacity-75"
+                        />
+                      </div>
+                      <div className="absolute -right-2 top-8 whitespace-nowrap">
+                        <span className="bg-orange-500 text-white px-2 py-1 rounded font-bold text-sm animate-bounce">
+                          Streak!
+                          <span className="absolute -top-1 left-1/2 transform -translate-x-1/2 border-l-4 border-r-4 border-b-4 border-transparent border-b-orange-500"></span>
+                        </span>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
                 <button 
                   onClick={() => setCurrentWeekOffset(prev => prev + 1)}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
                 >
                   <ChevronLeft className="text-gray-600" />
                 </button>
@@ -337,15 +380,18 @@ const HomePage = () => {
                     <div key={index} className="text-center group relative">
                       <div
                         className={`w-11 h-11 rounded-full border-2 mb-2 flex items-center justify-center
-                          ${item.completed ? "border-green-500 bg-green-50" :
-                          item.active ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
+                          transition-all duration-200 transform group-hover:scale-110
+                          ${item.completed ? "border-green-500 bg-green-50 group-hover:bg-green-100" :
+                          item.active ? "border-blue-500 bg-blue-50 group-hover:bg-blue-100" : 
+                          "border-gray-200 group-hover:border-gray-300 group-hover:bg-gray-50"}`}
                       >
                         <div className="flex flex-col items-center">
                           <span className="text-xs">{item.date}</span>
                           <svg
-                            className={`w-4 h-4 ${item.completed ? "text-green-500" :
+                            className={`w-4 h-4 transition-colors duration-200 ${
+                              item.completed ? "text-green-500" :
                               item.active ? "text-blue-500" : "text-gray-400"
-                              }`}
+                            }`}
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -369,14 +415,16 @@ const HomePage = () => {
                         </div>
                       </div>
                       <span
-                        className={`text-sm ${item.completed ? "font-medium text-green-500" :
+                        className={`text-sm transition-colors duration-200 ${
+                          item.completed ? "font-medium text-green-500" :
                           item.active ? "font-medium text-blue-500" : "text-gray-400"
-                          }`}
+                        }`}
                       >
                         {item.day}
                       </span>
                       {/* Tooltip */}
-                      <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block">
+                      <div className="absolute z-10 bottom-full left-1/2 transform -translate-x-1/2 mb-2 
+                        opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <div className="bg-gray-800 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
                           {item.hoverText}
                         </div>
@@ -387,12 +435,11 @@ const HomePage = () => {
                       </div>
                     </div>
                   ))}
-                  
                 </div>
                 
                 <button 
                   onClick={() => setCurrentWeekOffset(prev => Math.max(0, prev - 1))}
-                  className="p-2 hover:bg-gray-100 rounded-full"
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
                 >
                   <ChevronRight className="text-gray-600" />
                 </button>
@@ -419,7 +466,7 @@ const HomePage = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold">COINS</h3>
+                    <h3 className="font-semibold">COINS EARNED</h3>
                     <p className="text-gray-500 flex items-center gap-1">
                       <span className="text-yellow-600 font-medium">280</span> coins
                     </p>
@@ -428,25 +475,15 @@ const HomePage = () => {
               </div>
               <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm flex-1">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-yellow-400 rounded-xl flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-yellow-800"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
+                  <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                     </svg>
                   </div>
                   <div>
-                    <h3 className="font-semibold">COINS EARNED</h3>
+                    <h3 className="font-semibold">BADGES EARNED</h3>
                     <p className="text-gray-500 flex items-center gap-1">
-                      <span className="text-yellow-600 font-medium">280</span> coins
+                      <span className="text-purple-600 font-medium">2</span> unlocked
                     </p>
                   </div>
                 </div>

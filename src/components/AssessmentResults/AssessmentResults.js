@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { User, Settings, LogOut, Book } from "lucide-react";
+import { User, Settings, LogOut, Book, Award } from "lucide-react";
 import { useLocation, Navigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -91,6 +91,15 @@ const Navbar = () => {
                     <Book size={18} className="text-yellow-600" />
                   </span>
                   Learning Plan
+                </a>
+                <a
+                  href="/achievements"
+                  className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                >
+                  <span className="inline-flex items-center justify-center w-8 h-8 bg-purple-100 rounded-full mr-3">
+                    <Award size={18} className="text-purple-600" />
+                  </span>
+                  Achievements
                 </a>
                 <a
                   href="/"
