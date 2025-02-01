@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut, Book, Award } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer  } from 'react-toastify'; // For Toast notifications
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -197,8 +200,46 @@ const HomePage = () => {
   const [loginDates, setLoginDates] = useState([]);
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [coinBalance, setCoinBalance] = useState(0); // State for coins
+  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [selectedMissedDate, setSelectedMissedDate] = useState(null); // Store missed date
+  
+  
+  const handleBuyStreak = async (missedDate) => {
+  const token = localStorage.getItem('token');
+
+    try {
+      const response = await fetch('http://localhost:3005/api/users/buyStreak', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: token,
+        },
+        body: JSON.stringify({ missedDate }),
+      });
+      const data = await response.json();
+
+      if (data.message === 'Streak purchased successfully') {
+        setShowModal(false);
+        setCoinBalance(data.updatedCoins);  // Update coin balance
+        setLoginDates(data.updatedStreak);  // Update streak
+
+        // Show success message and refresh the page after toast disappears
+        toast.success('Streak purchased successfully!', {
+          onClose: () => {
+            window.location.reload(); // Refresh the page after toast closes
+          },
+        });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error('Failed to buy streak!');
+    }
+  };
 
   useEffect(() => {
+
     const fetchData = async () => {
       const token = localStorage.getItem('token');
 
@@ -226,13 +267,25 @@ const HomePage = () => {
         });
         const weekStreakData = await weekStreakResponse.json();
         setLoginDates(weekStreakData.loginDates);
-        
+
+        // Fetch User Coins
+        const coinResponse = await fetch('http://localhost:3005/api/users/coins', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
+        });
+        const coinData = await coinResponse.json();
+        setCoinBalance(coinData.coins); // Set the coin balance
+
         // Calculate continuous streak from most recent dates
         let streak = 0;
         const today = new Date().toISOString().split('T')[0];
         const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
         
         let currentDate = new Date(today);
+        let streakFlag = true;
         // Start checking from today backwards
         while (streak < sortedDates.length) {
           const dateToCheck = currentDate.toISOString().split('T')[0];
@@ -269,7 +322,9 @@ const HomePage = () => {
         fullDate: date.toISOString().split('T')[0],
         displayDate: date.getDate(),
         day: dayNames[index],
-        isToday: date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0]
+        isToday: date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0],
+        isFuture: date > today
+
       };
     });
   
@@ -279,11 +334,13 @@ const HomePage = () => {
       fullDate: dateObj.fullDate,
       completed: loginDates.includes(dateObj.fullDate),
       active: dateObj.isToday,
-      hoverText: loginDates.includes(dateObj.fullDate) 
+      hoverText: dateObj.isFuture ? "Day to come" :
+        loginDates.includes(dateObj.fullDate) 
         ? "Great job! You completed your learning this day." 
         : dateObj.isToday 
           ? "Today's learning awaits!" 
-          : "No learning activity this day"
+          : "No learning activity this day. Click it to buy streak!",
+      canBuyStreak: !loginDates.includes(dateObj.fullDate) && !dateObj.isToday, // Can buy streak if not completed and not today
     }));
   };
   
@@ -307,7 +364,6 @@ const HomePage = () => {
     );
   }
 
-
   return (
     <div className="min-h-screen text-center">
       <Navbar />
@@ -320,6 +376,18 @@ const HomePage = () => {
             </span>
           </h2>
         </motion.div>
+               {/* Add ToastContainer at the root level */}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Left Column */}
@@ -377,21 +445,28 @@ const HomePage = () => {
                 
                 <div className="flex justify-between items-center space-x-4">
                   {days.map((item, index) => (
-                    <div key={index} className="text-center group relative">
+                    <div
+                      key={index}
+                      className="text-center group relative"
+                      onClick={() => {
+                        if (item.canBuyStreak) {
+                          setSelectedMissedDate(item.fullDate); // Set the missed date for purchase
+                          setShowModal(true); // Show modal when clicked on a missed streak
+                        }
+                      }}
+                    >
                       <div
-                        className={`w-11 h-11 rounded-full border-2 mb-2 flex items-center justify-center
-                          transition-all duration-200 transform group-hover:scale-110
-                          ${item.completed ? "border-green-500 bg-green-50 group-hover:bg-green-100" :
-                          item.active ? "border-blue-500 bg-blue-50 group-hover:bg-blue-100" : 
-                          "border-gray-200 group-hover:border-gray-300 group-hover:bg-gray-50"}`}
+                        className={`w-11 h-11 rounded-full border-2 mb-2 flex items-center justify-center transition-all duration-200 transform 
+                          ${item.completed ? "border-green-500 bg-green-50" :
+                            item.active ? "border-blue-500 bg-blue-50" :
+                            "border-gray-200 group-hover:border-gray-300 group-hover:bg-gray-50"}`}
                       >
                         <div className="flex flex-col items-center">
                           <span className="text-xs">{item.date}</span>
                           <svg
-                            className={`w-4 h-4 transition-colors duration-200 ${
-                              item.completed ? "text-green-500" :
-                              item.active ? "text-blue-500" : "text-gray-400"
-                            }`}
+                            className={`w-4 h-4 transition-colors duration-200 
+                              ${item.completed ? "text-green-500" :
+                                item.active ? "text-blue-500" : "text-gray-400"}`}
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -415,10 +490,8 @@ const HomePage = () => {
                         </div>
                       </div>
                       <span
-                        className={`text-sm transition-colors duration-200 ${
-                          item.completed ? "font-medium text-green-500" :
-                          item.active ? "font-medium text-blue-500" : "text-gray-400"
-                        }`}
+                        className={`text-sm transition-colors duration-200 ${item.completed ? "font-medium text-green-500" :
+                          item.active ? "font-medium text-blue-500" : "text-gray-400"}`}
                       >
                         {item.day}
                       </span>
@@ -434,8 +507,85 @@ const HomePage = () => {
                           border-t-4 border-t-gray-800"></div>
                       </div>
                     </div>
+
                   ))}
                 </div>
+
+                {showModal && (
+                  <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-gray-800 bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50"
+                >
+                  <motion.div 
+                    initial={{ scale: 0.9, y: 20 }}
+                    animate={{ scale: 1, y: 0 }}
+                    exit={{ scale: 0.9, y: 20 }}
+                    className="bg-white p-8 rounded-2xl shadow-xl w-96 relative"
+                  >
+                    <div className="absolute -top-4 -right-4">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="bg-gray-100 hover:bg-gray-200 rounded-full p-2 text-gray-600 transition-colors duration-200"
+                      >
+                        <X size={20} />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-center mb-6">
+                      <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                        <Flame className="w-8 h-8 text-orange-500" />
+                      </div>
+                    </div>
+
+                    <h3 className="text-xl font-bold text-center mb-2">Recover Your Streak</h3>
+                    <p className="text-gray-600 text-center mb-6">
+                      Use 100 coins to recover your streak for {selectedMissedDate}.
+                    </p>
+
+                    <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600">Cost</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-orange-600">100</span>
+                          <span className="text-gray-500">coins</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-gray-600">Your Balance</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-orange-600">{coinBalance}</span>
+                          <span className="text-gray-500">coins</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setShowModal(false)}
+                        className="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-medium transition-colors duration-200"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => handleBuyStreak(selectedMissedDate)}
+                        className="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={coinBalance < 100}
+                      >
+                        Buy Streak
+                      </button>
+                    </div>
+                    
+                    {coinBalance < 100 && (
+                      <p className="text-red-500 text-sm text-center mt-4">
+                        Insufficient coins. You need {100 - coinBalance} more coins.
+                      </p>
+                    )}
+                  </motion.div>
+                </motion.div>
+                )}
+
                 
                 <button 
                   onClick={() => setCurrentWeekOffset(prev => Math.max(0, prev - 1))}
@@ -468,7 +618,7 @@ const HomePage = () => {
                   <div>
                     <h3 className="font-semibold">COINS EARNED</h3>
                     <p className="text-gray-500 flex items-center gap-1">
-                      <span className="text-yellow-600 font-medium">280</span> coins
+                      <span className="text-yellow-600 font-medium">{coinBalance}</span> coins
                     </p>
                   </div>
                 </div>
