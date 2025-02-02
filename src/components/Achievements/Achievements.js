@@ -178,11 +178,40 @@ const Navbar = () => {
 const Achievements = () => {
   const totalBadges = badges.length;
   const unlockedBadges = badges.filter((badge) => badge.unlocked).length;
-  const coinCount = 280;
 
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [coinBalance, setCoinBalance] = useState(0); // State for coins
+  
+  useEffect(() => {
+
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
+
+      try {
+        setLoading(true);
+
+        // Fetch User Coins
+        const coinResponse = await fetch('http://localhost:3005/api/users/coins', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
+        });
+        const coinData = await coinResponse.json();
+        setCoinBalance(coinData.coins); // Set the coin balance
+
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   if (loading) {
     return (
@@ -224,7 +253,7 @@ const Achievements = () => {
               <div className="text-left">
                 <h3 className="text-xl font-bold text-yellow-900 mb-1">Coins Earned</h3>
                 <p className="text-4xl font-black text-white drop-shadow-md">
-                  {coinCount}
+                  {coinBalance}
                   <span className="text-lg font-semibold ml-2 text-yellow-100">coins</span>
                 </p>
               </div>
