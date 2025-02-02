@@ -1,9 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut, Book, Award } from "lucide-react";
+import { Menu, X, Flame, ChevronRight, ChevronLeft, User, Settings, LogOut, Book, Award, Coins } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer  } from 'react-toastify'; // For Toast notifications
 import 'react-toastify/dist/ReactToastify.css';
+
+const StreakInfoOverlay = () => {
+  const [showInfo, setShowInfo] = useState(false);
+  
+  return (
+    <div className="relative inline-block ml-2">
+      
+      <button
+        onMouseEnter={() => setShowInfo(true)}
+        onMouseLeave={() => setShowInfo(false)}
+        className="group p-1.5  rounded-full  border border-dashed border-yellow-500 animate-bounce"
+      >
+        <div className="flex items-center gap-1">
+          <Coins className="w-4 h-4 text-yellow-500 group-hover:text-yellow-600" />
+          <span className="text-xs font-medium text-yellow-500 group-hover:text-yellow-600">100</span>
+        </div>
+      </button>
+      
+      {showInfo && (
+        <div className="absolute z-10 -right-0 top-11 w-64 transform">
+          <div className="bg-white p-3 rounded-xl shadow-lg border border-gray-200">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 bg-orange-100 rounded-full flex items-center justify-center">
+                <Flame className="w-3 h-3 text-orange-500" />
+              </div>
+              <span className="text-sm font-medium text-gray-800">Streak Recovery</span>
+            </div>
+            <p className="text-xs text-gray-600">
+              Click on any missed day to recover your streak for 100 coins!
+            </p>
+          </div>
+          <div className="absolute -top-1 right-4 w-2 h-2 bg-white transform rotate-45 border-l border-t border-gray-200"></div>
+        </div>
+      )}
+    </div>
+  
+);
+}
+
+
 
 
 const Navbar = () => {
@@ -401,6 +441,7 @@ const HomePage = () => {
                     <div className="text-xl text-gray-500">
                       {weekStreak === 1 ? 'day' : 'days'} streak
                     </div>
+                    <StreakInfoOverlay />
                   </div>
                   <p className="text-gray-700">
                     Keep learning to <span className="font-semibold text-green-600">maintain your streak</span>
