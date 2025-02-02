@@ -1,4 +1,4 @@
-export function level4(k) {
+export function level4(k, music) {
     k.scene("level4", () => {
         let bogies = [
             { x: 200, y: 420, value: 3 },
@@ -9,6 +9,17 @@ export function level4(k) {
         let gameState = "MOVE_BOGIE";
         let score = 0;
         let currentBogieIndex = 0
+
+        let isSettingsOpen = false;
+        let isMuted = false;
+        let isPaused = false;
+
+        function pointInRect(point, rect) {
+            return point.x >= rect.x &&
+                point.x <= rect.x + rect.width &&
+                point.y >= rect.y &&
+                point.y <= rect.y + rect.height;
+        }
 
 
         function drawBogies() {
@@ -63,27 +74,27 @@ export function level4(k) {
         }
 
         function addBogie() {
-            if(bogies.length < 6){
-            const lastBogie = bogies[bogies.length - 1];
-            const secondLastBogie = bogies[bogies.length - 2];
-            const xDifference = lastBogie.x - secondLastBogie.x;
+            if (bogies.length < 6) {
+                const lastBogie = bogies[bogies.length - 1];
+                const secondLastBogie = bogies[bogies.length - 2];
+                const xDifference = lastBogie.x - secondLastBogie.x;
 
-            // Set the dynamic value (for example, it could be random, based on previous value, etc.)
-            const dynamicValue = Math.floor(Math.random() * 9) + 1; 
+                // Set the dynamic value (for example, it could be random, based on previous value, etc.)
+                const dynamicValue = Math.floor(Math.random() * 9) + 1;
 
-            const newBogie = {
-                x: (lastBogie.x + xDifference) - 5,
-                y: lastBogie.y,
-                value: dynamicValue // Use dynamic value
-            };
+                const newBogie = {
+                    x: (lastBogie.x + xDifference) - 5,
+                    y: lastBogie.y,
+                    value: dynamicValue // Use dynamic value
+                };
 
-            // Add the new bogie to the array
-            bogies.push(newBogie);
-        } 
+                // Add the new bogie to the array
+                bogies.push(newBogie);
+            }
         }
 
-        function removeBogie(){
-            if(bogies.length >= 3){
+        function removeBogie() {
+            if (bogies.length >= 3) {
                 bogies.pop();
             }
         }
@@ -314,6 +325,7 @@ export function level4(k) {
         }
 
         k.onKeyPress("space", () => {
+            if (isPaused) return;
             k.play("jump", { volume: 0.8 });
             if (gameState === "JUMP") {
                 if (currentBogieIndex < bogies.length) {
@@ -371,7 +383,7 @@ export function level4(k) {
 
                             // Create a minimal, matching button
                             const submitButton = document.createElement("button");
-                            submitButton.disabled = true; 
+                            submitButton.disabled = true;
                             submitButton.innerText = "→";  // Using an arrow instead of "Submit"
                             submitButton.style.position = "absolute";
                             submitButton.style.bottom = "48px";
@@ -422,19 +434,20 @@ export function level4(k) {
                                     setTimeout(() => {
                                         if (score === 30) {
                                             k.play("completed", { volume: 0.8 });
-                                            k.go('end', {nextLevel: 'level5', currentLevel: 'level4' })
+                                            music.stop();
+                                            k.go('end', { nextLevel: 'level5', currentLevel: 'level4' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
                                         for (let i = 0; i <= 9; i++) {
                                             const dynamicValue = Math.floor(Math.random() * 100); // Random number between 0 and 99
                                             console.log(dynamicValue);
-                                        
+
                                             if (dynamicValue % 2 === 0) {
                                                 addBogie(); // Add bogie if the number is even
                                             } else {
                                                 removeBogie(); // Remove bogie if the number is odd
                                             }
-                                        }                                        
+                                        }
                                         currentBogieIndex = 0
                                         gameState = "MOVE_BOGIE";
                                     }, 3000);
@@ -448,19 +461,20 @@ export function level4(k) {
                                     setTimeout(() => {
                                         if (score === 30) {
                                             k.play("completed", { volume: 1.8 });
-                                            k.go('end', {nextLevel: 'level5', currentLevel: 'level4' })
+                                            music.stop();
+                                            k.go('end', { nextLevel: 'level5', currentLevel: 'level4' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
                                         for (let i = 0; i <= 10; i++) {
                                             const dynamicValue = Math.floor(Math.random() * 100); // Random number between 0 and 99
                                             console.log(dynamicValue);
-                                        
+
                                             if (dynamicValue % 2 === 0) {
                                                 addBogie(); // Add bogie if the number is even
                                             } else {
                                                 removeBogie(); // Remove bogie if the number is odd
                                             }
-                                        }                                        
+                                        }
                                         currentBogieIndex = 0
                                         gameState = "MOVE_BOGIE";
                                     }, 3000);
@@ -481,6 +495,7 @@ export function level4(k) {
         });
 
         k.onUpdate(() => {
+            if (isPaused) return;
             if (gameState === "MOVE_BOGIE") {
                 let moveX = 0;
                 let moveY = 0;
@@ -591,11 +606,174 @@ export function level4(k) {
                 origin: 'center'
             });
 
+            //Settings
+            k.drawSprite({
+                sprite: 'gear',
+                pos: k.vec2(k.width() - 50, 50),
+                scale: 0.5,
+                origin: 'center'
+            });
+
+            if (isSettingsOpen) {
+                // Menu background with shadow and rounded corners
+                k.drawRect({
+                    pos: k.vec2(k.width() - 200, 85),
+                    width: 180,
+                    height: 120,
+                    color: k.rgb(250, 250, 250), // Softer background
+                    outline: { width: 3, color: k.rgb(50, 50, 50) }, // Stronger outline
+                    radius: 10, // Rounded corners
+                });
+
+                // Mute button with hover effect
+                let muteColor = isMuted ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
+                k.drawRect({
+                    pos: k.vec2(k.width() - 190, 95),
+                    width: 160,
+                    height: 45,
+                    color: muteColor,
+                    outline: { width: 2, color: k.rgb(80, 80, 80) },
+                    radius: 8, // Rounded corners
+                });
+                k.drawText({
+                    text: isMuted ? "🔊 Unmute" : "🔈 Mute",
+                    pos: k.vec2(k.width() - 180, 110),
+                    origin: "center",
+                    size: 15,
+                    font: "myFont",
+                    color: k.rgb(30, 30, 30),
+                });
+
+                // Pause button with hover effect
+                let pauseColor = isPaused ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
+                k.drawRect({
+                    pos: k.vec2(k.width() - 190, 150),
+                    width: 160,
+                    height: 45,
+                    color: pauseColor,
+                    outline: { width: 2, color: k.rgb(80, 80, 80) },
+                    radius: 8, // Rounded corners
+                });
+                k.drawText({
+                    text: isPaused ? "▶ Resume" : "⏸ Pause",
+                    pos: k.vec2(k.width() - 180, 165),
+                    origin: "center",
+                    size: 15,
+                    font: "myFont",
+                    color: k.rgb(30, 30, 30),
+                });
+            }
+
+            if (isPaused) {
+                k.drawRect({
+                    pos: k.vec2(0, 0),
+                    width: k.width(),
+                    height: k.height(),
+                    opacity: 0.8,
+                    color: k.rgb(0, 0, 0, 0)
+                });
+                k.drawSprite({
+                    sprite: 'arrow',
+                    pos: k.vec2(k.center().x - 40, k.center().y - 50),
+                    scale: 1.2,
+                    origin: 'center'
+                });
+                k.drawText({
+                    text: "Resume",
+                    pos: k.vec2(k.center().x - 100, k.center().y + 40),
+                    origin: "center",
+                    size: 30,
+                    font: "myFont",
+                    color: k.rgb(255, 255, 255),
+                });
+            }
+
             if (gameState === "MOVE_BOGIE") {
 
             }
 
 
+        });
+
+
+        k.onMousePress(() => {
+            const mousePos = k.mousePos();
+            if (isPaused) {
+                const resumeButtonArea = {
+                    x: k.center().x - 40,
+                    y: k.center().y - 50,
+                    width: 80,
+                    height: 80
+                };
+                if (pointInRect(mousePos, resumeButtonArea)) {
+                    isPaused = false;
+                    k.play("click");
+                }
+            }
+
+            // Settings icon click
+            const settingsIconArea = {
+                x: k.width() - 70,
+                y: 30,
+                width: 40,
+                height: 40
+            };
+
+            if (!isSettingsOpen && pointInRect(mousePos, settingsIconArea)) {
+                isSettingsOpen = true;
+                return;
+            }
+
+            // Menu interactions
+            if (isSettingsOpen) {
+                const menuArea = {
+                    x: k.width() - 180,
+                    y: 80,
+                    width: 160,
+                    height: 100
+                };
+
+                // Click outside menu
+                if (!pointInRect(mousePos, menuArea)) {
+                    isSettingsOpen = false;
+                    return;
+                }
+
+                // Mute button click
+                const muteButtonArea = {
+                    x: k.width() - 170,
+                    y: 90,
+                    width: 140,
+                    height: 40
+                };
+
+                if (pointInRect(mousePos, muteButtonArea)) {
+                    isMuted = !isMuted;
+                    if (isMuted) {
+                        music.stop();
+                    } else {
+                        music.play();
+                    }
+                    k.play("click");
+                }
+
+                // Pause button click
+                const pauseButtonArea = {
+                    x: k.width() - 170,
+                    y: 140,
+                    width: 140,
+                    height: 40
+                };
+
+                if (pointInRect(mousePos, pauseButtonArea)) {
+                    if (!isPaused) {
+                        k.play("click");
+                        isSettingsOpen = false
+                    }
+                    isPaused = true;
+                }
+
+            }
         });
 
     });

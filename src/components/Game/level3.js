@@ -1,4 +1,4 @@
-export function level3(k) {
+export function level3(k, music) {
   k.scene("level3", () => {
     let bogies = [
       { x: 200, y: 420, value: 3 },
@@ -14,6 +14,17 @@ export function level3(k) {
     let insertionIndex = Math.floor(Math.random() * (bogies.length - 1)) + 1;
     //let insertionIndex = 1
     let removeIndex = -100;
+
+    let isSettingsOpen = false;
+    let isMuted = false;
+    let isPaused = false;
+
+    function pointInRect(point, rect) {
+      return point.x >= rect.x &&
+        point.x <= rect.x + rect.width &&
+        point.y >= rect.y &&
+        point.y <= rect.y + rect.height;
+    }
 
 
     function drawBogies() {
@@ -446,6 +457,7 @@ export function level3(k) {
     }
 
     k.onKeyPress("space", () => {
+      if (isPaused) return; 
       k.play("jump", { volume: 0.8 });
       if (gameState === "JUMP") {
 
@@ -470,6 +482,7 @@ export function level3(k) {
     });
 
     k.onUpdate(() => {
+      if (isPaused) return;
       if (gameState === "MOVE_BOGIE") {
         let moveX = 0;
         let moveY = 0;
@@ -563,6 +576,7 @@ export function level3(k) {
               setTimeout(() => {
                 if (score === 20) {
                   k.play("completed", { volume: 0.8 });
+                  music.stop();
                   k.go('end', {nextLevel: 'level4', currentLevel: 'level3' })
                 }
                 gameState = "SELECT_NUMBER";
@@ -674,6 +688,88 @@ export function level3(k) {
         origin: 'center'
       });
 
+      //Settings
+      k.drawSprite({
+        sprite: 'gear',
+        pos: k.vec2(k.width() - 50, 50),
+        scale: 0.5,
+        origin: 'center'
+      });
+
+      if (isSettingsOpen) {
+        // Menu background with shadow and rounded corners
+        k.drawRect({
+          pos: k.vec2(k.width() - 200, 85),
+          width: 180,
+          height: 120,
+          color: k.rgb(250, 250, 250), // Softer background
+          outline: { width: 3, color: k.rgb(50, 50, 50) }, // Stronger outline
+          radius: 10, // Rounded corners
+        });
+
+        // Mute button with hover effect
+        let muteColor = isMuted ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
+        k.drawRect({
+          pos: k.vec2(k.width() - 190, 95),
+          width: 160,
+          height: 45,
+          color: muteColor,
+          outline: { width: 2, color: k.rgb(80, 80, 80) },
+          radius: 8, // Rounded corners
+        });
+        k.drawText({
+          text: isMuted ? "🔊 Unmute" : "🔈 Mute",
+          pos: k.vec2(k.width() - 180, 110),
+          origin: "center",
+          size: 15,
+          font: "myFont",
+          color: k.rgb(30, 30, 30),
+        });
+
+        // Pause button with hover effect
+        let pauseColor = isPaused ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
+        k.drawRect({
+          pos: k.vec2(k.width() - 190, 150),
+          width: 160,
+          height: 45,
+          color: pauseColor,
+          outline: { width: 2, color: k.rgb(80, 80, 80) },
+          radius: 8, // Rounded corners
+        });
+        k.drawText({
+          text: isPaused ? "▶ Resume" : "⏸ Pause",
+          pos: k.vec2(k.width() - 180, 165),
+          origin: "center",
+          size: 15,
+          font: "myFont",
+          color: k.rgb(30, 30, 30),
+        });
+      }
+
+      if (isPaused) {
+        k.drawRect({
+          pos: k.vec2(0, 0),
+          width: k.width(),
+          height: k.height(),
+          opacity: 0.8,
+          color: k.rgb(0, 0, 0, 0)
+        });
+        k.drawSprite({
+          sprite: 'arrow',
+          pos: k.vec2(k.center().x - 40, k.center().y - 50),
+          scale: 1.2,
+          origin: 'center'
+        });
+        k.drawText({
+          text: "Resume",
+          pos: k.vec2(k.center().x - 100, k.center().y + 40),
+          origin: "center",
+          size: 30,
+          font: "myFont",
+          color: k.rgb(255, 255, 255),
+        });
+      }
+
       if (gameState === "SELECT_NUMBER") {
         for (let i = 1; i <= 5; i++) {
           k.drawText({
@@ -687,12 +783,92 @@ export function level3(k) {
       }
     });
 
-    k.onKeyPress("1", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 1; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("2", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 2; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("3", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 3; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("4", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 4; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("5", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 5; gameState = "MOVE_BOGIE"; } });
-    k.onKeyPress("6", () => { if (gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 6; gameState = "MOVE_BOGIE"; } });
+    k.onMousePress(() => {
+      const mousePos = k.mousePos();
+      if (isPaused) {
+        const resumeButtonArea = {
+          x: k.center().x - 40,
+          y: k.center().y - 50,
+          width: 80,
+          height: 80
+        };
+        if (pointInRect(mousePos, resumeButtonArea)) {
+          isPaused = false;
+          k.play("click");
+        }
+      }
+
+      // Settings icon click
+      const settingsIconArea = {
+        x: k.width() - 70,
+        y: 30,
+        width: 40,
+        height: 40
+      };
+
+      if (!isSettingsOpen && pointInRect(mousePos, settingsIconArea)) {
+        isSettingsOpen = true;
+        return;
+      }
+
+      // Menu interactions
+      if (isSettingsOpen) {
+        const menuArea = {
+          x: k.width() - 180,
+          y: 80,
+          width: 160,
+          height: 100
+        };
+
+        // Click outside menu
+        if (!pointInRect(mousePos, menuArea)) {
+          isSettingsOpen = false;
+          return;
+        }
+
+        // Mute button click
+        const muteButtonArea = {
+          x: k.width() - 170,
+          y: 90,
+          width: 140,
+          height: 40
+        };
+
+        if (pointInRect(mousePos, muteButtonArea)) {
+          isMuted = !isMuted;
+          if (isMuted) {
+            music.stop();
+          } else {
+            music.play();
+          }
+          k.play("click");
+        }
+
+        // Pause button click
+        const pauseButtonArea = {
+          x: k.width() - 170,
+          y: 140,
+          width: 140,
+          height: 40
+        };
+
+        if (pointInRect(mousePos, pauseButtonArea)) {
+          if (!isPaused) {
+            k.play("click");
+            isSettingsOpen = false
+          }
+          isPaused = true;
+        }
+
+      }
+    });
+
+    k.onKeyPress("1", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 1; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("2", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 2; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("3", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 3; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("4", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 4; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("5", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 5; gameState = "MOVE_BOGIE"; } });
+    k.onKeyPress("6", () => { if (!isPaused && gameState === "SELECT_NUMBER") { k.play("data", { volume: 0.8 }); newBogie.value = 6; gameState = "MOVE_BOGIE"; } });
   });
 
   k.go("level3");
