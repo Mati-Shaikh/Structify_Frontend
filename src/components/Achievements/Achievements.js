@@ -3,57 +3,69 @@ import {
   Menu,
   X,
   Lock,
-  Unlock,
-  Star,
   User,
   Settings,
   LogOut,
   Award,
   Book,
+  Star,
+  ChevronDown,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const badges = [
   {
-    name: "Linked List Explorer",
-    description: "Complete all Linked List levels and assessments",
+    name: "Linko Insertion Master",
+    description: "Complete all insertion levels and assessments in Linked Lists",
     unlocked: true,
   },
   {
-    name: "Queue Conqueror",
-    description: "Master Queues by passing all levels and assessments",
-    unlocked: false,
-  },
-  {
-    name: "Stack Strategist",
-    description: "Master Stacks topic completely",
+    name: "Linko Traversal Trailblazer",
+    description: "Complete all Traversal levels and assessments in Linked Lists",
     unlocked: true,
   },
   {
-    name: "Insertion Master",
-    description: "Complete all insertion levels and assessments",
+    name: "Linko Deletion Dynamo",
+    description: "Complete all Deletion levels and assessments in Linked Lists",
+    unlocked: true,
+  },
+  {
+    name: "Queue Enqueue Expert",
+    description: "Master Enqueue operations by passing all related levels and assessments",
     unlocked: false,
   },
   {
-    name: "Traversal Trailblazer",
-    description: "Master traversal techniques and assessments",
+    name: "Queue Dequeue Dominator",
+    description: "Master Dequeue operations by passing all related levels and assessments",
     unlocked: false,
   },
   {
-    name: "Deletion Dynamo",
-    description: "Complete deletion subtopic and assessments",
+    name: "Queue Search Specialist",
+    description: "Master Search operations in Queues by passing all related levels and assessments",
     unlocked: false,
   },
+  // Stack badges (3 subtopics: Push, Pop, and Peek)
+  {
+    name: "Stack Push Pro",
+    description: "Master Push operations by passing all related levels and assessments",
+    unlocked: false,
+  },
+  {
+    name: "Stack Pop Performer",
+    description: "Master Pop operations by passing all related levels and assessments",
+    unlocked: false,
+  },
+  {
+    name: "Stack Peek Pioneer",
+    description: "Master Peek operations by passing all related levels and assessments",
+    unlocked: false,
+  },
+  // Overall achievements (optional)
   {
     name: "Data Structure Prodigy",
     description: "Complete all topics in the tutoring system",
     unlocked: false,
-  },
-  {
-    name: "Assessment Ace",
-    description: "Score exceptionally high in any assessment",
-    unlocked: true,
   },
 ];
 
@@ -175,24 +187,126 @@ const Navbar = () => {
   );
 };
 
+// ... Keep existing badges array and Navbar component the same ...
+
+const BadgeCategory = ({ title, badges }) => {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const unlockedCount = badges.filter(badge => badge.unlocked).length;
+
+  return (
+    <div className="mb-8">
+      <motion.button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+            <Award className="w-6 h-6 text-blue-600" />
+          </div>
+          <div className="text-left">
+            <h3 className="font-bold text-gray-900">{title}</h3>
+            <p className="text-sm text-gray-500">{unlockedCount} of {badges.length} completed</p>
+          </div>
+        </div>
+        <motion.div
+          animate={{ rotate: isExpanded ? 180 : 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          <ChevronDown className="w-5 h-5 text-gray-400" />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {badges.map((badge, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`relative group overflow-hidden rounded-xl flex ${
+                    badge.unlocked
+                      ? "bg-gradient-to-br from-white to-gray-50"
+                      : "bg-gray-50"
+                  } border ${
+                    badge.unlocked ? "border-green-200" : "border-gray-200"
+                  } hover:shadow-lg transition-all duration-300`}
+                >
+                  {/* Left side - 70% - Content */}
+                  <div className="w-[70%] p-6 relative">
+                    <div className="relative z-10">
+                      <h4 className={`font-bold mb-2 ${
+                        badge.unlocked ? "text-gray-900" : "text-gray-400"
+                      }`}>
+                        {badge.name}
+                      </h4>
+                      <p className={`text-sm ${
+                        badge.unlocked ? "text-gray-600" : "text-gray-400"
+                      }`}>
+                        {badge.description}
+                      </p>
+                    </div>
+
+                    {badge.unlocked && (
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-300 to-blue-300 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300" />
+                    )}
+                  </div>
+
+                  {/* Right side - 30% - Icon */}
+                  <div className={`w-[30%] flex flex-col items-center justify-center border-l ${
+                    badge.unlocked ? "border-green-100" : "border-gray-200"
+                  }`}>
+                    <div className="relative">
+                      <div className={`w-16 h-16 rounded-full flex items-center justify-center ${
+                        badge.unlocked ? "bg-green-100" : "bg-gray-100"
+                      }`}>
+                        <Award className={`w-8 h-8 ${
+                          badge.unlocked ? "text-green-600" : "text-gray-400"
+                        }`} />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Achievements = () => {
   const totalBadges = badges.length;
   const unlockedBadges = badges.filter((badge) => badge.unlocked).length;
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [coinBalance, setCoinBalance] = useState(0); // State for coins
-  
-  useEffect(() => {
+  const [coinBalance, setCoinBalance] = useState(0);
 
+  // Group badges by category
+  const categorizedBadges = {
+    "Linked Lists": badges.filter(badge => badge.name.includes("Linko")),
+    "Queues": badges.filter(badge => badge.name.includes("Queue")),
+    "Stacks": badges.filter(badge => badge.name.includes("Stack")),
+    "Overall": badges.filter(badge => !badge.name.includes("Linko") && 
+                                    !badge.name.includes("Queue") && 
+                                    !badge.name.includes("Stack"))
+  };
+
+  useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem('token');
-
       try {
         setLoading(true);
-
-        // Fetch User Coins
         const coinResponse = await fetch('http://localhost:3005/api/users/coins', {
           method: 'GET',
           headers: {
@@ -201,8 +315,7 @@ const Achievements = () => {
           },
         });
         const coinData = await coinResponse.json();
-        setCoinBalance(coinData.coins); // Set the coin balance
-
+        setCoinBalance(coinData.coins);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -232,7 +345,7 @@ const Achievements = () => {
   }
 
   return (
-    <div className="min-h-screen text-center ">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -240,11 +353,13 @@ const Achievements = () => {
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto p-8 mt-24"
       >
+        {/* Keep existing progress cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {/* Coins Card - Enhanced */}
+          {/* Coins Card */}
           <motion.div 
             whileHover={{ scale: 1.02 }}
             className="bg-gradient-to-br from-yellow-400 to-yellow-300 rounded-2xl p-6 shadow-lg overflow-hidden relative">
+            {/* ... Keep existing coins card content ... */}
             <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjEiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"/>
             <div className="flex items-center gap-4 relative z-10">
               <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -260,11 +375,12 @@ const Achievements = () => {
             </div>
           </motion.div>
 
-          {/* Badges Summary Card - Enhanced */}
+          {/* Badges Summary Card */}
           <motion.div
             whileHover={{ scale: 1.02 }}
             className="bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl p-6 shadow-lg relative overflow-hidden"
           >
+            {/* ... Keep existing badges summary card content ... */}
             <div className="absolute inset-0 opacity-10 bg-white" />
             <div className="flex items-center gap-4 relative z-10">
               <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
@@ -289,57 +405,16 @@ const Achievements = () => {
           </motion.div>
         </div>
 
-        {/* Badges Grid - Enhanced */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {badges.map((badge, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ y: -5 }}
-              className={`group relative rounded-xl p-6 transition-all duration-300 overflow-hidden ${
-                badge.unlocked
-                  ? "bg-white border border-gray-200 shadow-lg hover:shadow-xl"
-                  : "bg-gray-50 border border-gray-200"
-              }`}
-            >
-              <div className="relative z-10">
-                <div className="flex justify-center mb-4">
-                  {badge.unlocked ? (
-                    <div className="relative">
-                      <Award size={48} className="text-green-600 fill-green-100 drop-shadow" />
-                      <div className="absolute inset-0 animate-pulse">
-                        <Star size={20} className="absolute top-0 right-0 text-yellow-400" />
-                      </div>
-                    </div>
-                  ) : (
-                    <Lock size={48} className="text-gray-400" />
-                  )}
-                </div>
-                <h4
-                  className={`font-bold mb-2 text-lg ${
-                    badge.unlocked ? "text-gray-800" : "text-gray-400"
-                  }`}
-                >
-                  {badge.name}
-                </h4>
-                <p
-                  className={`text-sm ${
-                    badge.unlocked ? "text-gray-600" : "text-gray-400"
-                  }`}
-                >
-                  {badge.description}
-                </p>
-              </div>
-              
-              {badge.unlocked && (
-                <>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-green-100/20 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-green-400 to-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </>
-              )}
-            </motion.div>
+        {/* New categorized badges display */}
+        <div className="space-y-6">
+          {Object.entries(categorizedBadges).map(([category, categoryBadges]) => (
+            categoryBadges.length > 0 && (
+              <BadgeCategory
+                key={category}
+                title={category}
+                badges={categoryBadges}
+              />
+            )
           ))}
         </div>
       </motion.div>
