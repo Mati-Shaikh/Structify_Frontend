@@ -19,7 +19,7 @@ import LearningPath from "./components/LearningPath/LearningPath";
 import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
 import GameCompletionCard from "./components/BadgeCard";
-
+import Achievements from "./components/Achievements/Achievements";
 const App = () => {
   return (
     <Router>
@@ -40,6 +40,7 @@ const App = () => {
           element={<ProtectedRoute element={LearningPath} />}
         />
         <Route path="/home" element={<ProtectedRoute element={HomePage} />} />
+        <Route path="/achievements" element={<ProtectedRoute element={Achievements} />} />
         <Route
           path="/profile"
           element={<ProtectedRoute element={ProfileManagement} />}

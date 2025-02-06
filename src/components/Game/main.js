@@ -43,6 +43,9 @@ export default function main(level) {
   k.loadSprite("background2", "/game/sprites/hills2.png");
   k.loadSprite("background3", "/game/sprites/hills4.png");
   k.loadSprite("bomb", "/game/sprites/bomb.png");
+  k.loadSprite("bean", "/game/sprites/bean.png");
+  k.loadSprite("gear", "/game/sprites/gear.png");
+  k.loadSprite("arrow", "/game/sprites/arrow.png");
 
   //Loading sounds
   k.loadSound("goalSound", "/game/sound/coin.wav");
@@ -54,6 +57,7 @@ export default function main(level) {
   k.loadSound("appear", "/game/sound/appear.wav");
   k.loadSound("lose", "/game/sound/lose.wav");
   k.loadSound("bomb", "/game/sound/bomb.wav");
+  k.loadSound("click", "/game/sound/click.wav");
   k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
 
   k.onLoad(() => {
@@ -66,16 +70,20 @@ export default function main(level) {
   // Set default cursor
   setCustomCursor("/game/sprites/cursor.png");
 
+  const music = k.play("bgMusic");
+  music.value = 0.05;
+  music.loop = true;
 
-  level1(k);
-  level2(k);
-  level3(k);
-  level4(k);
-  level5(k);
-  level6(k);
-  level7(k);
-  level8(k);
-  level9(k);
+
+  level1(k, music);
+  level2(k, music);
+  level3(k, music);
+  level4(k, music);
+  level5(k, music);
+  level6(k, music);
+  level7(k, music);
+  level8(k, music);
+  level9(k, music);
   end(k);
 
   k.go(level);
