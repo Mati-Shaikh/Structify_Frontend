@@ -1,9 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle, Book, Award } from 'lucide-react';
+import { motion, AnimatePresence } from "framer-motion";
 
+import { useNavigate } from "react-router-dom";
+import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle, Book, Award, Smile, Frown, Meh, ThumbsUp, Heart } from 'lucide-react';
+const LevelFeedback = ({ levelId, onClose }) => {
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  
+  const feedbackOptions = [
+    { icon: <Smile size={24} className="text-green-500" />, label: "Easy & Fun" },
+    { icon: <Heart size={24} className="text-red-500" />, label: "Challenging but Good" },
+    { icon: <Meh size={24} className="text-yellow-500" />, label: "Need More Practice" },
+    { icon: <ThumbsUp size={24} className="text-blue-500" />, label: "Very Helpful" },
+  ];
+
+  const handleFeedbackSubmit = (label) => {
+    setSelectedFeedback(label);
+    // Here you can add API call to save feedback
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      onClose();
+    }, 2000);
+  };
+
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-lg border border-gray-100">
+      {showToast && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="absolute top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg"
+        >
+          Thank you for your feedback!
+        </motion.div>
+      )}
+      
+      {selectedFeedback ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-4"
+        >
+          <motion.div
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 0.5 }}
+            className="w-12 h-12 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-3"
+          >
+            <ThumbsUp className="text-blue-500" />
+          </motion.div>
+          <h3 className="text-lg font-semibold text-gray-800">Thank you!</h3>
+          <p className="text-sm text-gray-600 mt-1">Your feedback helps us improve the learning experience</p>
+        </motion.div>
+      ) : (
+        <>
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">How was this level?</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {feedbackOptions.map(({ icon, label }, index) => (
+              <motion.button
+                key={index}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => handleFeedbackSubmit(label)}
+                className="flex items-center gap-2 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              >
+                {icon}
+                <span className="text-sm text-gray-700">{label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -340,12 +413,25 @@ const LearningPath = () => {
                           {!level.isLocked && !level.isCompleted && (
                             <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-20" />
                           )}
+
+                      {level.isCompleted && (
+                              <div className="mt-4">
+                                <LevelFeedback 
+                                  levelId={level.id} 
+                                  onClose={() => console.log('Feedback closed for level:', level.id)} 
+                                />
+                              </div>
+                            )}
+
                         </div>
                       </div>
                     </div>
+              
+
                     </Tooltip>
                   </div>
                 ))}
+
 
                 {/* Enhanced Assessment */}
                 <div className="relative ml-5 mb-8">

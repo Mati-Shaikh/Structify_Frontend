@@ -112,7 +112,7 @@ export function end(k) {
 
     k.onKeyPress("enter", () => {
       handleKeyPress(() => {
-        window.location.href = "/learningpath"; 
+        window.location.href = "/game-completion"; 
       });
     });
   });
