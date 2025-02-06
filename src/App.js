@@ -18,6 +18,7 @@ import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/Protecte
 import LearningPath from "./components/LearningPath/LearningPath";
 import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
+import GameCompletionCard from "./components/BadgeCard";
 
 const App = () => {
   return (
@@ -76,7 +77,10 @@ const App = () => {
         <Route path="/game/level7" element={<ProtectedRouteGame element={Game} level="level7" />} />
         <Route path="/game/level8" element={<ProtectedRouteGame element={Game} level="level8" />} />
         <Route path="/game/level9" element={<ProtectedRouteGame element={Game} level="level9" />} />
-        
+        <Route
+          path="/game-completion"
+          element={<GameCompletionCard gameType="insertion-front" score={100} timeSpent={45} />}
+        />
       </Routes>
     </Router>
   );
