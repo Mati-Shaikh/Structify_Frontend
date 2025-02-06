@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Award, Crown, Star, Activity, Check, ChevronRight } from 'lucide-react';
+import { Trophy, Award, Crown, Star, Activity, Check, ChevronRight, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import FeedbackAndSupport from '../FeedbackAndSupport/index';
 
 const GameCompletionCard = ({ gameType, score, timeSpent, onClose }) => {
   const [showStats, setShowStats] = useState(false);
   const [showBadge, setShowBadge] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   useEffect(() => {
     const statsTimer = setTimeout(() => setShowStats(true), 500);
@@ -51,13 +53,12 @@ const GameCompletionCard = ({ gameType, score, timeSpent, onClose }) => {
         exit={{ opacity: 0, scale: 0.9 }}
         className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
       >
-        {/* Header Section */}
         <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 text-white">
           <div className="flex items-center justify-center mb-4">
             <motion.div
               initial={{ rotate: -180, scale: 0 }}
               animate={{ rotate: 0, scale: 1 }}
-              transition={{ type: "spring", duration: 1.5 }}
+              transition={{ type: 'spring', duration: 1.5 }}
               className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg"
             >
               {getIconByGame(gameType)}
@@ -67,22 +68,15 @@ const GameCompletionCard = ({ gameType, score, timeSpent, onClose }) => {
           <p className="text-blue-100 text-center">You've mastered this level</p>
         </div>
 
-        {/* Content Section */}
         <div className="p-6">
           <AnimatePresence>
             {showStats && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="space-y-6"
-              >
-                {/* Title Card */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                 <div className="bg-gray-50 rounded-xl p-4 text-center">
                   <p className="text-gray-600 text-sm mb-2">You've earned the title</p>
                   <h3 className="text-xl font-bold text-gray-900">{getTitleByGame(gameType)}</h3>
                 </div>
 
-                {/* Stats Grid */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-blue-50 rounded-xl p-4">
                     <p className="text-blue-600 text-sm mb-1">Score</p>
@@ -96,14 +90,9 @@ const GameCompletionCard = ({ gameType, score, timeSpent, onClose }) => {
                   </div>
                 </div>
 
-                {/* Badge */}
                 <AnimatePresence>
                   {showBadge && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex justify-center"
-                    >
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center">
                       <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg">
                         <Award size={20} />
                         <span className="font-medium">Professional Badge Earned!</span>
@@ -112,37 +101,18 @@ const GameCompletionCard = ({ gameType, score, timeSpent, onClose }) => {
                   )}
                 </AnimatePresence>
 
-                {/* Feedback Prompt */}
-                <div className="text-center space-y-4">
-                  <p className="text-gray-600">How was your experience with this level?</p>
-                  <div className="flex justify-center gap-3">
-                    {["😊", "🤔", "😕"].map((emoji, index) => (
-                      <motion.button
-                        key={index}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center text-xl hover:bg-gray-100 transition-colors"
-                      >
-                        {emoji}
-                      </motion.button>
-                    ))}
-                  </div>
+                <div className="flex flex-col gap-4">
+                  <button onClick={() => (window.location.href = '/learningpath')} className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    Continue Learning
+                    <ChevronRight size={20} />
+                  </button>
                 </div>
-
-                {/* Continue Button */}
-                <button
-  onClick={() => (window.location.href = "/learningpath")}
-  className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
->
-  Continue Learning
-  <ChevronRight size={20} />
-</button>
-
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </motion.div>
+      <FeedbackAndSupport isOpen={isFeedbackOpen} setIsOpen={setIsFeedbackOpen} />
     </div>
   );
 };
