@@ -20,6 +20,7 @@ import AssessmentResults from "./components/AssessmentResults/AssessmentResults"
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
 import GameCompletionCard from "./components/BadgeCard";
 import Achievements from "./components/Achievements/Achievements";
+import FeedbackAndSupport from "./components/FeedbackAndSupport";
 const App = () => {
   return (
     <Router>
@@ -52,6 +53,12 @@ const App = () => {
           path="/welcome"
           element={<ProtectedRouteWelcome element={WelcomePage} />}
         />
+
+<Route
+          path="/feedback"
+          element={<FeedbackAndSupport/>}
+        />
+
         <Route
           path="/initialQuestions"
           element={<ProtectedRouteInitialQuestions element={InitialQuestions} />}
