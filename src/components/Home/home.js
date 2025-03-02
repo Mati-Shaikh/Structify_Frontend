@@ -364,7 +364,6 @@ const HomePage = () => {
         day: dayNames[index],
         isToday: date.toISOString().split('T')[0] === new Date().toISOString().split('T')[0],
         isFuture: date > today
-
       };
     });
   
@@ -380,7 +379,7 @@ const HomePage = () => {
         : dateObj.isToday 
           ? "Today's learning awaits!" 
           : "No learning activity this day. Click it to buy streak!",
-      canBuyStreak: !loginDates.includes(dateObj.fullDate) && !dateObj.isToday, // Can buy streak if not completed and not today
+      canBuyStreak: !loginDates.includes(dateObj.fullDate) && !dateObj.isToday && !dateObj.isFuture, // Added !dateObj.isFuture condition
     }));
   };
   
@@ -486,16 +485,16 @@ const HomePage = () => {
                 
                 <div className="flex justify-between items-center space-x-4">
                   {days.map((item, index) => (
-                    <div
-                      key={index}
-                      className="text-center group relative"
-                      onClick={() => {
-                        if (item.canBuyStreak) {
-                          setSelectedMissedDate(item.fullDate); // Set the missed date for purchase
-                          setShowModal(true); // Show modal when clicked on a missed streak
-                        }
-                      }}
-                    >
+                      <div
+                        key={index}
+                        className="text-center group relative"
+                        onClick={() => {
+                          if (item.canBuyStreak) {
+                            setSelectedMissedDate(item.fullDate); // Set the missed date for purchase
+                            setShowModal(true); // Show modal when clicked on a missed streak
+                          }
+                        }}
+                      >
                       <div
                         className={`w-11 h-11 rounded-full border-2 mb-2 flex items-center justify-center transition-all duration-200 transform 
                           ${item.completed ? "border-green-500 bg-green-50" :
