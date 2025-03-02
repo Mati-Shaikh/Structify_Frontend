@@ -139,7 +139,7 @@ const Navbar = () => {
                   Achievements
                 </a>
                 <a
-                  href="/"
+                  href="/profile"
                   className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                 >
                   <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full mr-3">

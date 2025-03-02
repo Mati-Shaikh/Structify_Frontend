@@ -21,7 +21,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between">
         {/* Structify Logo and Home Link */}
         <div className="flex items-center ml-8">
-          <a href="/" style={{ fontFamily: 'Atma, sans-serif' }} className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600">Structify</a>
+          <a href="/home" style={{ fontFamily: 'Atma, sans-serif' }} className="text-4xl font-bold pt-2 text-blue-600 font-semibold hover:text-green-600">Structify</a>
           {/* <div className="flex ml-24">
                         <a href="/home" className="text-black font-medium text-xl flex items-center relative after:content-[''] after:absolute after:w-full after:h-[2px] after:bg-black after:left-0 after:bottom-[-2px] after:scale-x-0 after:transition-transform after:duration-300 hover:after:scale-x-100">
                             <FaHome className="mr-2" />
@@ -75,7 +75,7 @@ const Navbar = () => {
                   </span>
                   Achievements
                 </a>
-                <a href="/" className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                <a href="/profile" className="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200">
                   <span className="inline-flex items-center justify-center w-8 h-8 bg-green-100 rounded-full mr-3">
                     <Settings size={18} className="text-green-600" />
                   </span>
