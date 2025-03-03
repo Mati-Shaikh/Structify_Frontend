@@ -20,7 +20,7 @@ import AssessmentResults from "./components/AssessmentResults/AssessmentResults"
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
 import GameCompletionCard from "./components/GameCompletionCard/GameCompletionCard";
 import Achievements from "./components/Achievements/Achievements";
-import FeedbackAndSupport from "./components/FeedbackAndSupport";
+import FeedbackAndSupport from "./components/Support/Support";
 const App = () => {
   return (
     <Router>

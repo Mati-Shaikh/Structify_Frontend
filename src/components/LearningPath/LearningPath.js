@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle, Book, Award, Star } from 'lucide-react';
+import FeedbackAndSupport from '../Support/Support';
 
 
 const Navbar = () => {
@@ -182,6 +183,7 @@ const LearningPath = () => {
   const [levelRatings, setLevelRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -231,6 +233,10 @@ const LearningPath = () => {
     if (!assessment.isLocked) {
       navigate(`/assessment${sectionIndex + 1}`);
     }
+  };
+
+  const submitFeedback = () => {
+    setIsFeedbackOpen(true);
   };
 
   const getLevelRating = (levelId) => {
@@ -476,6 +482,7 @@ const LearningPath = () => {
           </div>
         </div>
       </div>
+      <FeedbackAndSupport isOpen={isFeedbackOpen} setIsOpen={setIsFeedbackOpen} />
     </div>
   );
 };

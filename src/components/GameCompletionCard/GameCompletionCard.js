@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Trophy, Star, ChevronRight, RotateCcw, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import FeedbackAndSupport from '../FeedbackAndSupport/index';
 import { useLocation } from 'react-router-dom';
 
 const GameCompletionCard = () => {
@@ -268,7 +267,6 @@ const GameCompletionCard = () => {
           </AnimatePresence>
         </div>
       </motion.div>
-      <FeedbackAndSupport isOpen={isFeedbackOpen} setIsOpen={setIsFeedbackOpen} />
     </div>
   );
 };
