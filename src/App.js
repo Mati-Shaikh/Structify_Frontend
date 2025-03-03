@@ -87,7 +87,7 @@ const App = () => {
         <Route path="/game/level9" element={<ProtectedRouteGame element={Game} level="level9" />} />
         <Route
           path="/game-completion"
-          element={<GameCompletionCard gameType="insertion-front" score={100} timeSpent={45} />}
+          element={<GameCompletionCard />}
         />
       </Routes>
     </Router>

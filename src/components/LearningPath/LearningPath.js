@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { User, Settings, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle, Book, Award } from 'lucide-react';
+import { BookOpen, Lock, Check, Play, ChevronRight, Link2, AlertTriangle, Book, Award, Star } from 'lucide-react';
 
 
 const Navbar = () => {
@@ -121,8 +121,6 @@ const Navbar = () => {
   );
 };
 
-
-
 const Tooltip = ({ children, content }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -145,28 +143,74 @@ const Tooltip = ({ children, content }) => {
   );
 };
 
+const StarRating = ({ rating, ratingCount }) => {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
 
+  return (
+    <div className="flex items-center">
+      <div className="flex">
+        {/* Full stars */}
+        {[...Array(fullStars)].map((_, i) => (
+          <Star key={`full-${i}`} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+        ))}
+        
+        {/* Half star */}
+        {hasHalfStar && (
+          <div className="relative">
+            <Star className="w-4 h-4 text-yellow-400" />
+            <div className="absolute inset-0 overflow-hidden w-1/2">
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+            </div>
+          </div>
+        )}
+        
+        {/* Empty stars */}
+        {[...Array(emptyStars)].map((_, i) => (
+          <Star key={`empty-${i}`} className="w-4 h-4 text-yellow-400" />
+        ))}
+      </div>
+      <span className="ml-1 text-sm text-gray-500">({ratingCount})</span>
+    </div>
+  );
+};
 
 const LearningPath = () => {
   const navigate = useNavigate();
   const [learningPath, setLearningPath] = useState(null);
+  const [levelRatings, setLevelRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchLearningPath = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem('token');
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3005/api/users/learningPath', {
+        
+        // Fetch learning path
+        const learningPathResponse = await fetch('http://localhost:3005/api/users/learningPath', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             token: token,
           },
         });
-        const data = await response.json();
-        setLearningPath(data.learningPath);
+        const learningPathData = await learningPathResponse.json();
+        
+        // Fetch level ratings
+        const ratingsResponse = await fetch('http://localhost:3005/api/users/levelRatings', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            token: token,
+          },
+        });
+        const ratingsData = await ratingsResponse.json();
+        
+        setLearningPath(learningPathData.learningPath);
+        setLevelRatings(ratingsData.levelRatings || {});
       } catch (err) {
         setError(err.message);
       } finally {
@@ -174,7 +218,7 @@ const LearningPath = () => {
       }
     };
 
-    fetchLearningPath();
+    fetchData();
   }, []);
 
   const handleLevelClick = (level) => {
@@ -187,6 +231,16 @@ const LearningPath = () => {
     if (!assessment.isLocked) {
       navigate(`/assessment${sectionIndex + 1}`);
     }
+  };
+
+  const getLevelRating = (levelId) => {
+    if (levelRatings[levelId]) {
+      return {
+        average: parseFloat(levelRatings[levelId].averageRating) || 0,
+        count: levelRatings[levelId].ratingCount || 0
+      };
+    }
+    return { average: 0, count: 0 };
   };
 
   if (loading) {
@@ -270,84 +324,84 @@ const LearningPath = () => {
                 </div>
 
                 {/* Enhanced Levels */}
-                {section.levels.map((level, index) => (
-                  <div key={level.id} className="relative">
-                    {/* Improved connecting line with gradient */}
-                    {(index !== section.levels.length - 1 || section.assessment) && (
-                      <div className="absolute left-[19px] top-10 bottom-0 w-1 bg-gradient-to-b from-blue-200 to-purple-200 rounded-full" />
-                    )}
+                {section.levels.map((level, index) => {
+                  const { average, count } = getLevelRating(level.id);
+                  return (
+                    <div key={level.id} className="relative">
+                      {/* Improved connecting line with gradient */}
+                      {(index !== section.levels.length - 1 || section.assessment) && (
+                        <div className="absolute left-[19px] top-10 bottom-0 w-1 bg-gradient-to-b from-blue-200 to-purple-200 rounded-full" />
+                      )}
 
-                    {/* Enhanced Level Box */}
-                    <Tooltip content={getLevelTooltipContent(level)}>
-                    <div className="flex mb-6 group">
+                      {/* Enhanced Level Box */}
+                      <Tooltip content={getLevelTooltipContent(level)}>
+                        <div className="flex mb-6 group">
+                          <div className="flex items-center">
+                            <div
+                              className={`
+                                w-10 h-10 rounded-xl shadow-md flex items-center justify-center 
+                                transform transition-all duration-300 group-hover:scale-110
+                                ${level.isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' :
+                                  level.isLocked ? 'bg-gray-200' :
+                                    level.danger ? 'bg-gradient-to-br from-red-400 to-red-600' :
+                                      'bg-gradient-to-br from-blue-400 to-purple-500'}
+                              `}
+                            >
+                              {level.isLocked ? (
+                                <Lock className="w-5 h-5 text-gray-500" />
+                              ) : level.isCompleted ? (
+                                <Check className="w-5 h-5 text-white" />
+                              ) : level.danger ? (
+                                <AlertTriangle className="w-5 h-5 text-white" />
+                              ) : (
+                                <Play className="w-5 h-5 text-white" />
+                              )}
+                            </div>
 
-                      
-                        <div className="flex items-center">
-                          <div
-                            className={`
-                              w-10 h-10 rounded-xl shadow-md flex items-center justify-center 
-                              transform transition-all duration-300 group-hover:scale-110
-                              ${level.isCompleted ? 'bg-gradient-to-br from-green-400 to-green-600' :
-                                level.isLocked ? 'bg-gray-200' :
-                                  level.danger ? 'bg-gradient-to-br from-red-400 to-red-600' :
-                                    'bg-gradient-to-br from-blue-400 to-purple-500'}
-                            `}
-                          >
-                            {level.isLocked ? (
-                              <Lock className="w-5 h-5 text-gray-500" />
-                            ) : level.isCompleted ? (
-                              <Check className="w-5 h-5 text-white" />
-                            ) : level.danger ? (
-                              <AlertTriangle className="w-5 h-5 text-white" />
-                            ) : (
-                              <Play className="w-5 h-5 text-white" />
+                            {level.danger && !level.isLocked && !level.isCompleted && (
+                              <div className="w-2 h-2 bg-red-500 rounded-full absolute -top-1 -right-1" />
                             )}
                           </div>
 
-                          {level.danger && !level.isLocked && !level.isCompleted && (
-                            <div className="w-2 h-2 bg-red-500 rounded-full absolute -top-1 -right-1" />
-                          )}
-                        </div>
-                      
+                          {/* Enhanced Level Content */}
+                          <div
+                            className="ml-4 flex-1 cursor-pointer"
+                            onClick={() => handleLevelClick(level)}
+                          >
+                            <div
+                              className={`
+                                relative overflow-hidden bg-white rounded-xl p-4 shadow-sm border
+                                transform transition-all duration-300
+                                ${level.isCompleted ? 'border-green-200 hover:border-green-300' :
+                                  level.isLocked ? 'border-gray-200 cursor-not-allowed' :
+                                    level.danger ? 'border-red-200 hover:border-red-300' :
+                                      'border-purple-200 hover:border-purple-300 hover:shadow-md'}
+                              `}
+                            >
+                              <div className="flex justify-between items-center relative z-10">
+                                <h3 className="font-medium text-gray-800">{level.name}</h3>
+                                {/* Star Rating Component - Replacing the "7.5 min" text */}
+                                <StarRating rating={average} ratingCount={count} />
+                              </div>
 
+                              {/* Completion animation background */}
+                              {level.isCompleted && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-30" />
+                              )}
 
-                      {/* Enhanced Level Content */}
-                      <div
-                        className="ml-4 flex-1 cursor-pointer"
-                        onClick={() => handleLevelClick(level)}
-                      >
-                        <div
-                          className={`
-                            relative overflow-hidden bg-white rounded-xl p-4 shadow-sm border
-                            transform transition-all duration-300
-                            ${level.isCompleted ? 'border-green-200 hover:border-green-300' :
-                              level.isLocked ? 'border-gray-200 cursor-not-allowed' :
-                                level.danger ? 'border-red-200 hover:border-red-300' :
-                                  'border-purple-200 hover:border-purple-300 hover:shadow-md'}
-                          `}
-                        >
-                          <div className="flex justify-between items-center relative z-10">
-                            <h3 className="font-medium text-gray-800">{level.name}</h3>
-                            <span className="text-xs text-gray-500">7.5 min</span>
+                              {/* Active level indicator */}
+                              {!level.isLocked && !level.isCompleted && (
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-20" />
+                              )}
+                            </div>
                           </div>
-
-                          {/* Completion animation background */}
-                          {level.isCompleted && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-green-50 to-blue-50 opacity-30" />
-                          )}
-
-                          {/* Active level indicator */}
-                          {!level.isLocked && !level.isCompleted && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-purple-50 to-blue-50 opacity-20" />
-                          )}
                         </div>
-                      </div>
+                      </Tooltip>
                     </div>
-                    </Tooltip>
-                  </div>
-                ))}
+                  );
+                })}
 
-                {/* Enhanced Assessment */}
+                {/* Assessment section remains unchanged */}
                 <div className="relative ml-5 mb-8">
                   <Tooltip content={getAssessmentTooltipContent(section.assessment)}>
                     <div 
@@ -375,8 +429,6 @@ const LearningPath = () => {
                             <BookOpen className="w-6 h-6 text-white" />
                           )}
                         </div>
-
-                        
                       </div>
 
                       <div className="ml-4 flex-1 cursor-pointer">
@@ -400,7 +452,6 @@ const LearningPath = () => {
                                  'Ready to test your knowledge?'}
                               </p>
                             </div>
-                            <span className="text-xs text-gray-500">{section.assessment.duration}</span>
                           </div>
                           
                           {section.assessment.isCompleted && (

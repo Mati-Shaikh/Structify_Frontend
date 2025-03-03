@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Trophy, Star, Activity, Check, ChevronRight, MessageSquare, Circle, RotateCcw, ArrowRight } from 'lucide-react';
+import { Trophy, Star, ChevronRight, RotateCcw, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import FeedbackAndSupport from '../FeedbackAndSupport/index';
 import { useLocation } from 'react-router-dom';
 
-const GameCompletionCard = ({ gameType, onClose }) => {
+const GameCompletionCard = () => {
   const [showContent, setShowContent] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(null);
@@ -12,6 +12,7 @@ const GameCompletionCard = ({ gameType, onClose }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
+  const [ratingError, setRatingError] = useState('');
   const location = useLocation();
 
   // Fetch coins and level data on component mount
@@ -22,7 +23,7 @@ const GameCompletionCard = ({ gameType, onClose }) => {
     const levelId = new URLSearchParams(location.search).get('levelId');
     const levelName = new URLSearchParams(location.search).get('levelName');
     if (levelId && levelName) {
-      setCurrentLevel({ id: levelId, name: levelName });
+      setCurrentLevel({ id: parseInt(levelId, 10), name: levelName });
     }
 
     // Fetch the current coins from the server
@@ -50,37 +51,42 @@ const GameCompletionCard = ({ gameType, onClose }) => {
     };
   }, [location.search]);
 
-  const getIconByGame = (type) => {
-    const iconProps = { size: 28 };
-    switch(type) {
-      case 'insertion-front':
-        return <Trophy {...iconProps} className="text-yellow-500" />;
-      case 'insertion-end':
-        return <Circle {...iconProps} className="text-purple-500" />;
-      case 'insertion-middle':
-        return <Circle {...iconProps} className="text-blue-500" />;
-      case 'traversal':
-        return <Star {...iconProps} className="text-green-500" />;
-      default:
-        return <Activity {...iconProps} className="text-blue-600" />;
-    }
-  };
-
-  // Custom coin icon component
-  const CoinIcon = ({ size = 20, className = "" }) => (
-    <div className={`relative ${className}`}>
-      <div className="absolute inset-0 bg-yellow-500 rounded-full shadow-inner"></div>
-      <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative">
-        <circle cx="12" cy="12" r="10" fill="#FBBF24" stroke="#F59E0B" strokeWidth="2" />
-        <circle cx="12" cy="12" r="7" fill="#F59E0B" />
-        <text x="12" y="15" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#FEF3C7">C</text>
-      </svg>
-    </div>
-  );
-
-  const handleRating = (value) => {
+  const handleRating = async (value) => {
     setRating(value);
-    setIsRatingSubmitted(true);
+    setRatingError('');
+
+    if (!currentLevel?.id) {
+      setRatingError('Level ID is missing');
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch('http://localhost:3005/api/users/submitRating', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          token: token,
+        },
+        body: JSON.stringify({
+          levelId: currentLevel.id,
+          rating: value
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsRatingSubmitted(true);
+        console.log('Rating submitted successfully:', data);
+      } else {
+        setRatingError(data.message || 'Failed to submit rating');
+        console.error('Rating submission failed:', data);
+      }
+    } catch (error) {
+      setRatingError('Network error. Please try again.');
+      console.error("Error submitting rating:", error);
+    }
   };
 
   const handleContinueLearning = () => {
@@ -129,7 +135,7 @@ const GameCompletionCard = ({ gameType, onClose }) => {
               transition={{ type: 'spring', duration: 1.2 }}
               className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg"
             >
-              {getIconByGame(gameType)}
+              <Trophy size={28} className="text-yellow-500" />
             </motion.div>
             <div>
               <h2 className="text-2xl font-bold">Congratulations!</h2>
@@ -188,6 +194,7 @@ const GameCompletionCard = ({ gameType, onClose }) => {
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(0)}
                         className="focus:outline-none transition-transform hover:scale-110"
+                        disabled={isRatingSubmitted}
                       >
                         <Star
                           fill={(hoverRating || rating) >= star ? "currentColor" : "none"}
@@ -201,9 +208,19 @@ const GameCompletionCard = ({ gameType, onClose }) => {
                       </button>
                     ))}
                   </div>
-                  {!isRatingSubmitted && (
+                  {!isRatingSubmitted && !ratingError && (
                     <p className="text-red-500 text-xs mt-2 text-center">
                       Please rate to continue
+                    </p>
+                  )}
+                  {ratingError && (
+                    <p className="text-red-500 text-xs mt-2 text-center">
+                      {ratingError}
+                    </p>
+                  )}
+                  {isRatingSubmitted && (
+                    <p className="text-green-500 text-xs mt-2 text-center">
+                      Rating submitted successfully!
                     </p>
                   )}
                 </div>
