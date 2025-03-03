@@ -1,7 +1,7 @@
 export function end(k) {
   return k.scene("end", ({ nextLevel, currentLevel }) => {
     let keysJammed = false; // Flag to prevent multiple keypress actions
-
+    let currentLevelData;
     // Text objects to be removed later
     const texts = [];
 
@@ -75,6 +75,7 @@ export function end(k) {
       })
       .then((data) => {
         console.log("Progress updated");
+        currentLevelData = data.currentLevel;
       })
       .catch((error) => {
         console.error("Error updating progress:", error);
@@ -112,7 +113,7 @@ export function end(k) {
 
     k.onKeyPress("enter", () => {
       handleKeyPress(() => {
-        window.location.href = "/game-completion"; 
+        window.location.href = `/game-completion?levelId=${currentLevelData.id}&levelName=${currentLevelData.name}`;
       });
     });
   });

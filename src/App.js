@@ -18,7 +18,7 @@ import ProtectedRouteInitialQuestions from "./components/ProtectedRoute/Protecte
 import LearningPath from "./components/LearningPath/LearningPath";
 import AssessmentResults from "./components/AssessmentResults/AssessmentResults";
 import ProtectedRouteGame from "./components/ProtectedRoute/ProtectedRouteGame";
-import GameCompletionCard from "./components/BadgeCard";
+import GameCompletionCard from "./components/BadgeCard/BadgeCard";
 import Achievements from "./components/Achievements/Achievements";
 import FeedbackAndSupport from "./components/FeedbackAndSupport";
 const App = () => {
