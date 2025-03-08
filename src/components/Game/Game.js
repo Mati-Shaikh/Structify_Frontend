@@ -14,7 +14,7 @@ const Game = ({ level }) => {
             id="game-container"
             className="bg-black flex flex-col items-center justify-center"
             style={{
-                width: '1000px',
+                width: '1515px',
                 height: gamestarted ? '0px' : '700px',
             }}
         >

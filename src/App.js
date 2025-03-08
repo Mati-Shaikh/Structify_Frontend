@@ -85,6 +85,7 @@ const App = () => {
         <Route path="/game/level7" element={<ProtectedRouteGame element={Game} level="level7" />} />
         <Route path="/game/level8" element={<ProtectedRouteGame element={Game} level="level8" />} />
         <Route path="/game/level9" element={<ProtectedRouteGame element={Game} level="level9" />} />
+        <Route path="/game/level10" element={<ProtectedRouteGame element={Game} level="level10" />} />
         <Route
           path="/game-completion"
           element={<GameCompletionCard />}

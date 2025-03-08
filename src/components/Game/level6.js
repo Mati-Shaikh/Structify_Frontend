@@ -1,4 +1,131 @@
 export function level6(k, music) {
+    const sandboxContainer = document.getElementById("sandbox-container");
+        sandboxContainer.classList.remove('hidden')
+      
+        // Add sandbox content
+        sandboxContainer.innerHTML = `
+          <div style="display: flex; align-items: center; margin-bottom: 24px;">
+            <div style="width: 12px; height: 12px; background-color: #ff5f57; border-radius: 50%; margin-right: 8px;"></div>
+            <div style="width: 12px; height: 12px; background-color: #febc2e; border-radius: 50%; margin-right: 8px;"></div>
+            <div style="width: 12px; height: 12px; background-color: #28c840; border-radius: 50%; margin-right: 16px;"></div>
+            <h3 style="margin: 0; font-weight: 500; font-size: 16px; color: #bdc3c7;">Traversal Find Maximum</h3>
+          </div>
+          <div class="code-display">
+            <style>
+              .code-display {
+                background: #282a36;
+                padding: 20px;
+                border-radius: 10px;
+                font-family: 'JetBrains Mono', 'Fira Code', monospace;
+                font-size: 14px;
+                line-height: 1.6;
+                box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+              }
+              .code-line {
+                display: flex;
+                align-items: center;
+                padding: 4px 8px;
+                border-radius: 6px;
+                transition: background 0.2s ease;
+              }
+              .code-line:hover {
+                background: rgba(255, 255, 255, 0.05);
+              }
+              .line-number {
+                color: #6272a4;
+                min-width: 32px;
+                user-select: none;
+                font-size: 12px;
+                text-align: right;
+                padding-right: 12px;
+              }
+              .code {
+                color: #f8f8f2;
+                padding-left: 12px;
+                border-left: 1px solid rgba(255, 255, 255, 0.1);
+              }
+              .keyword {
+                color: #ff79c6;
+              }
+              .function {
+                color: #50fa7b;
+              }
+              .object {
+                color: #8be9fd;
+              }
+              .operator {
+                color: #ff79c6;
+              }
+              .string {
+                color: #f1fa8c;
+              }
+              .highlighted {
+                background: rgba(96, 165, 250, 0.2);
+                border-left: 2px solid #bd93f9;
+              }
+            </style>
+           <div class="code-line" data-line="1">
+                <span class="line-number">1</span>
+                <span class="code"><span class="keyword">function</span> <span class="function">findMax</span>() {</span>
+            </div>
+            <div class="code-line" data-line="2">
+                <span class="line-number">2</span>
+                <span class="code">    <span class="keyword">let</span> current <span class="operator">=</span> head;</span>
+            </div>
+            <div class="code-line" data-line="3">
+                <span class="line-number">3</span>
+                <span class="code">    <span class="keyword">let</span> max <span class="operator">=</span> 0;</span>
+            </div>
+            <div class="code-line" data-line="4">
+                <span class="line-number">4</span>
+                <span class="code"></span>
+            </div>
+            <div class="code-line" data-line="5">
+                <span class="line-number">5</span>
+                <span class="code">    <span class="keyword">while</span> (current.next <span class="operator">!==</span> <span class="keyword">null</span>) {</span>
+            </div>
+            <div class="code-line" data-line="6">
+                <span class="line-number">6</span>
+                <span class="code">        <span class="keyword">if</span> (current.data <span class="operator">></span> max) {</span>
+            </div>
+            <div class="code-line" data-line="7">
+                <span class="line-number">7</span>
+                <span class="code">            max <span class="operator">=</span> current.data;</span>
+            </div>
+            <div class="code-line" data-line="8">
+                <span class="line-number">8</span>
+                <span class="code">        }</span>
+            </div>
+            <div class="code-line" data-line="9">
+                <span class="line-number">9</span>
+                <span class="code">        current <span class="operator">=</span> current.next;</span>
+            </div>
+            <div class="code-line" data-line="10">
+                <span class="line-number">10</span>
+                <span class="code">    }</span>
+            </div>
+            <div class="code-line" data-line="11">
+                <span class="line-number">11</span>
+                <span class="code"></span>
+            </div>
+            <div class="code-line" data-line="12">
+                <span class="line-number">12</span>
+                <span class="code">    <span class="keyword">return</span> max;</span>
+            </div>
+            <div class="code-line" data-line="13">
+                <span class="line-number">13</span>
+                <span class="code">}</span>
+            </div>
+          </div>
+          <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center;">
+              <div style="width: 8px; height: 8px; background-color: #bd93f9; border-radius: 50%; margin-right: 8px;"></div>
+              <span style="font-size: 12px; color: #bdc3c7;">Linked List</span>
+            </div>
+            <div style="font-size: 12px; color: #6272a4;">Level 6</div>
+          </div>
+        `;
     k.scene("level6", () => {
         let bogies = [
             { x: 200, y: 420, value: 3 },
@@ -14,6 +141,29 @@ export function level6(k, music) {
         let isSettingsOpen = false;
         let isMuted = false;
         let isPaused = false;
+
+        function highlightLine(...args) {
+            // Determine the array of line numbers to highlight
+            let lineNumbers;
+            if (Array.isArray(args[0])) {
+              lineNumbers = args[0]; // Use the array if the first argument is an array
+            } else {
+              lineNumbers = args; // Use the arguments as the array otherwise
+            }
+          
+            // Remove 'highlighted' class from all lines
+            document.querySelectorAll('.code-line').forEach(el => {
+              el.classList.remove('highlighted');
+            });
+          
+            // Highlight each specified line
+            lineNumbers.forEach(lineNumber => {
+              const lineEl = document.querySelector(`.code-line[data-line="${lineNumber}"]`);
+              if (lineEl) {
+                lineEl.classList.add('highlighted');
+              }
+            });
+          }
 
         function pointInRect(point, rect) {
         return point.x >= rect.x &&
@@ -330,6 +480,7 @@ export function level6(k, music) {
             if (isPaused) return;
             k.play("jump", { volume: 0.8 });
             if (gameState === "JUMP") {
+                highlightLine(5,6,7, 9);
                 if (currentBogieIndex < bogies.length) {
                     const targetBogie = bogies[currentBogieIndex];
                     currentBogieIndex++;
@@ -439,6 +590,7 @@ export function level6(k, music) {
                                         if (score === 30) {
                                             k.play("completed", { volume: 0.8 });
                                             music.stop();
+                                            sandboxContainer.classList.add('hidden');
                                             k.go('end', {nextLevel: 'level7', currentLevel: 'level6' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
@@ -466,6 +618,7 @@ export function level6(k, music) {
                                         if (score === 30) {
                                             k.play("completed", { volume: 1.8 });
                                             music.stop();
+                                            sandboxContainer.classList.add('hidden');
                                             k.go('end', {nextLevel: 'level7', currentLevel: 'level6' })
                                         }
                                         newBogie = { x: 20, y: 550, value: 0 };
@@ -497,7 +650,7 @@ export function level6(k, music) {
                 }
             }
         });
-
+        let prevGameState = null;
         k.onUpdate(() => {
             if (isPaused) return;
             if (gameState === "MOVE_BOGIE") {
@@ -549,6 +702,20 @@ export function level6(k, music) {
 
             }
 
+            if (gameState !== prevGameState) {
+                if (gameState === "MOVE_BOGIE") {
+                  highlightLine(null);
+                } else if (gameState === "JUMP") {
+                  highlightLine(2, 3);
+                }  else if (gameState === "BEFORELINK") {
+                  highlightLine(5);
+                }  else if (gameState === "LINK" || gameState === "ATTACHED" || gameState === "UNATTACHED") {
+                  highlightLine(12);
+                } 
+                prevGameState = gameState;
+            }
+
+
 
         });
 
@@ -566,14 +733,14 @@ export function level6(k, music) {
 
             k.drawText({
                 text: `Linko Traversal`,
-                pos: k.vec2(k.width() - 720, 40),
+                pos: k.vec2(1000 - 720, 40),
                 color: k.rgb(0, 0, 0),
                 font: "myFont",
                 size: 28,
             });
             k.drawText({
                 text: `Level 6`,
-                pos: k.vec2(k.width() - 600, 90),
+                pos: k.vec2(1000 - 600, 90),
                 color: k.rgb(0, 0, 0),
                 font: "myFont",
                 size: 28,
@@ -592,20 +759,20 @@ export function level6(k, music) {
             });
             k.drawSprite({
                 sprite: 'coin',
-                pos: k.vec2(k.width() - 130, 150),
+                pos: k.vec2(1000 - 130, 150),
                 scale: 1,
                 origin: 'center'
             });
             k.drawText({
                 text: `${score}`,
-                pos: k.vec2(k.width() - 80, 160),
+                pos: k.vec2(1000 - 80, 160),
                 color: k.rgb(0, 0, 0),
                 font: "myFont",
                 size: 24,
             });
             k.drawSprite({
                 sprite: 'portal',
-                pos: k.vec2(k.width() - 100, 600),
+                pos: k.vec2(1000 - 100, 600),
                 scale: 0.9,
                 origin: 'center'
             });
@@ -613,7 +780,7 @@ export function level6(k, music) {
             //Settings
             k.drawSprite({
                 sprite: 'gear',
-                pos: k.vec2(k.width() - 50, 50),
+                pos: k.vec2(1000 - 50, 50),
                 scale: 0.5,
                 origin: 'center'
             });
@@ -621,7 +788,7 @@ export function level6(k, music) {
             if (isSettingsOpen) {
                 // Menu background with shadow and rounded corners
                 k.drawRect({
-                    pos: k.vec2(k.width() - 200, 85),
+                    pos: k.vec2(1000 - 200, 85),
                     width: 180,
                     height: 120,
                     color: k.rgb(250, 250, 250), // Softer background
@@ -632,7 +799,7 @@ export function level6(k, music) {
                 // Mute button with hover effect
                 let muteColor = isMuted ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
                 k.drawRect({
-                    pos: k.vec2(k.width() - 190, 95),
+                    pos: k.vec2(1000 - 190, 95),
                     width: 160,
                     height: 45,
                     color: muteColor,
@@ -641,7 +808,7 @@ export function level6(k, music) {
                 });
                 k.drawText({
                     text: isMuted ? "🔊 Unmute" : "🔈 Mute",
-                    pos: k.vec2(k.width() - 180, 110),
+                    pos: k.vec2(1000 - 180, 110),
                     origin: "center",
                     size: 15,
                     font: "myFont",
@@ -651,7 +818,7 @@ export function level6(k, music) {
                 // Pause button with hover effect
                 let pauseColor = isPaused ? k.rgb(180, 180, 180) : k.rgb(220, 220, 220);
                 k.drawRect({
-                    pos: k.vec2(k.width() - 190, 150),
+                    pos: k.vec2(1000 - 190, 150),
                     width: 160,
                     height: 45,
                     color: pauseColor,
@@ -660,7 +827,7 @@ export function level6(k, music) {
                 });
                 k.drawText({
                     text: isPaused ? "▶ Resume" : "⏸ Pause",
-                    pos: k.vec2(k.width() - 180, 165),
+                    pos: k.vec2(1000 - 180, 165),
                     origin: "center",
                     size: 15,
                     font: "myFont",
@@ -671,20 +838,20 @@ export function level6(k, music) {
             if (isPaused) {
                 k.drawRect({
                     pos: k.vec2(0, 0),
-                    width: k.width(),
+                    width: 1000,
                     height: k.height(),
                     opacity: 0.8,
                     color: k.rgb(0, 0, 0, 0)
                 });
                 k.drawSprite({
                     sprite: 'arrow',
-                    pos: k.vec2(k.center().x - 40, k.center().y - 50),
+                    pos: k.vec2(500 - 40, k.center().y - 50),
                     scale: 1.2,
                     origin: 'center'
                 });
                 k.drawText({
                     text: "Resume",
-                    pos: k.vec2(k.center().x - 100, k.center().y + 40),
+                    pos: k.vec2(500 - 100, k.center().y + 40),
                     origin: "center",
                     size: 30,
                     font: "myFont",
@@ -704,7 +871,7 @@ export function level6(k, music) {
             const mousePos = k.mousePos();
             if (isPaused) {
                 const resumeButtonArea = {
-                    x: k.center().x - 40,
+                    x: 500 - 40,
                     y: k.center().y - 50,
                     width: 80,
                     height: 80
@@ -717,7 +884,7 @@ export function level6(k, music) {
 
             // Settings icon click
             const settingsIconArea = {
-                x: k.width() - 70,
+                x: 1000 - 70,
                 y: 30,
                 width: 40,
                 height: 40
@@ -731,7 +898,7 @@ export function level6(k, music) {
             // Menu interactions
             if (isSettingsOpen) {
                 const menuArea = {
-                    x: k.width() - 180,
+                    x: 1000 - 180,
                     y: 80,
                     width: 160,
                     height: 100
@@ -745,7 +912,7 @@ export function level6(k, music) {
 
                 // Mute button click
                 const muteButtonArea = {
-                    x: k.width() - 170,
+                    x: 1000 - 170,
                     y: 90,
                     width: 140,
                     height: 40
@@ -763,7 +930,7 @@ export function level6(k, music) {
 
                 // Pause button click
                 const pauseButtonArea = {
-                    x: k.width() - 170,
+                    x: 1000 - 170,
                     y: 140,
                     width: 140,
                     height: 40

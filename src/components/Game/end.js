@@ -1,5 +1,7 @@
 export function end(k) {
   return k.scene("end", ({ nextLevel, currentLevel }) => {
+    k.canvas.width = 1515
+    k.canvas.style.width = "1515px";
     let keysJammed = false; // Flag to prevent multiple keypress actions
     let currentLevelData;
     // Text objects to be removed later
@@ -9,32 +11,16 @@ export function end(k) {
     texts.push(
       k.add([
         k.text("You Win!", { size: 64, font: "myfont" }),
-        k.pos(k.width() / 2, 720 / 2 - 150),
+        k.pos(1515 / 2, 720 / 2 - 50),
         k.anchor("center"),
       ])
     );
 
-    // Display instructions
-    texts.push(
-      k.add([
-        k.text("Press ← to Play Again", { size: 16, font: "myfont" }),
-        k.pos(k.width() / 2, 720 / 2 - 50),
-        k.anchor("center"),
-      ])
-    );
 
     texts.push(
       k.add([
-        k.text("Press → to Move to Next Level", { size: 16, font: "myfont" }),
-        k.pos(k.width() / 2, 720 / 2),
-        k.anchor("center"),
-      ])
-    );
-
-    texts.push(
-      k.add([
-        k.text("Press Enter to Navigate to Learning Path", { size: 16, font: "myfont" }),
-        k.pos(k.width() / 2, 720 / 2 + 50),
+        k.text("Press Enter to Continue", { size: 16, font: "myfont" }),
+        k.pos(1515 / 2, 720 / 2 + 30),
         k.anchor("center"),
       ])
     );
@@ -42,7 +28,7 @@ export function end(k) {
     // Add a "Please wait..." message (initially hidden)
     const waitMessage = k.add([
       k.text("Wait for a few seconds", { size: 32, font: "myfont" }),
-      k.pos(k.width() / 2, 720 / 2),
+      k.pos(1515 / 2, 720 / 2 - 50),
       k.anchor("center"),
       k.opacity(0), // Hidden by default
     ]);
@@ -51,7 +37,7 @@ export function end(k) {
     const loadingCircle = k.add([
       k.circle(10), // Circle with a radius of 10
       k.color(255, 255, 255),
-      k.pos(k.width() / 2, 720 / 2 + 80),
+      k.pos(1515 / 2, 720 / 2 + 30),
       k.opacity(0), // Hidden by default
     ]);
 
@@ -97,19 +83,6 @@ export function end(k) {
         action();
       }, 2000); // 2-second delay
     };
-
-    // Event listeners for keypress actions
-    k.onKeyPress("left", () => {
-      handleKeyPress(() => {
-        k.go(currentLevel); // Restart the current level
-      });
-    });
-
-    k.onKeyPress("right", () => {
-      handleKeyPress(() => {
-        window.location.href = `/game/${nextLevel}`;
-      });
-    });
 
     k.onKeyPress("enter", () => {
       handleKeyPress(() => {

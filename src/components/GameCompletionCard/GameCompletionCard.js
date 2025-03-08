@@ -12,6 +12,7 @@ const GameCompletionCard = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [isRatingSubmitted, setIsRatingSubmitted] = useState(false);
   const [ratingError, setRatingError] = useState('');
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
   const location = useLocation();
 
   // Fetch coins and level data on component mount
@@ -53,9 +54,11 @@ const GameCompletionCard = () => {
   const handleRating = async (value) => {
     setRating(value);
     setRatingError('');
+    setIsSubmittingRating(true);
 
     if (!currentLevel?.id) {
       setRatingError('Level ID is missing');
+      setIsSubmittingRating(false);
       return;
     }
 
@@ -85,6 +88,8 @@ const GameCompletionCard = () => {
     } catch (error) {
       setRatingError('Network error. Please try again.');
       console.error("Error submitting rating:", error);
+    } finally {
+      setIsSubmittingRating(false);
     }
   };
 
@@ -112,6 +117,20 @@ const GameCompletionCard = () => {
   const submitFeedback = () => {
     setIsFeedbackOpen(true);
   };
+
+  const Spinner = () => (
+    <div className="flex justify-center mt-2">
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ 
+          duration: 1, 
+          repeat: Infinity, 
+          ease: "linear" 
+        }}
+        className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full"
+      />
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
@@ -207,17 +226,19 @@ const GameCompletionCard = () => {
                       </button>
                     ))}
                   </div>
-                  {!isRatingSubmitted && !ratingError && (
+                  
+                  {isSubmittingRating && <Spinner />}
+                  {!isSubmittingRating && !isRatingSubmitted && !ratingError && (
                     <p className="text-red-500 text-xs mt-2 text-center">
                       Please rate to continue
                     </p>
                   )}
-                  {ratingError && (
+                  {!isSubmittingRating && ratingError && (
                     <p className="text-red-500 text-xs mt-2 text-center">
                       {ratingError}
                     </p>
                   )}
-                  {isRatingSubmitted && (
+                  {!isSubmittingRating && isRatingSubmitted && (
                     <p className="text-green-500 text-xs mt-2 text-center">
                       Rating submitted successfully!
                     </p>

@@ -14,7 +14,7 @@ import { level9 } from "./level9";
 export default function main(level) {
   const k = kaplay({
     global: false,
-    width: 1000,
+    width: 1515,
     height: 700,
     background: [0, 0, 0],
     container: document.getElementById("game-container"),
@@ -60,32 +60,75 @@ export default function main(level) {
   k.loadSound("click", "/game/sound/click.wav");
   k.loadMusic("bgMusic", "/game/sound/bgMusic1.mp3");
 
+
+
+
+
   k.onLoad(() => {
 
-  const setCustomCursor = (cursorPath) => {
-    const canvas = k.canvas;
-    canvas.style.cursor = `url('${cursorPath}'), auto`;
-  };
+    k.canvas.width = 1000
+    k.canvas.style.width = "1000px";
 
-  // Set default cursor
-  setCustomCursor("/game/sprites/cursor.png");
+    const sandboxContainer = document.createElement("div");
+    sandboxContainer.id = "sandbox-container";
+    sandboxContainer.style.cssText = `
+    width: 520px;
+    height: 700px;
+    background-color: #1e1e2e;
+    color: #f8f8f2;
+    overflow: auto;
+    padding: 28px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    border-radius: 0 12px 12px 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+`;
 
-  const music = k.play("bgMusic");
-  music.value = 0.05;
-  music.loop = true;
+    // Append it to the main container
+    const gameContainer = document.getElementById("game-container");
+    gameContainer.appendChild(sandboxContainer)
 
 
-  level1(k, music);
-  level2(k, music);
-  level3(k, music);
-  level4(k, music);
-  level5(k, music);
-  level6(k, music);
-  level7(k, music);
-  level8(k, music);
-  level9(k, music);
-  end(k);
 
-  k.go(level);
-});
+    const setCustomCursor = (cursorPath) => {
+      const canvas = k.canvas;
+      canvas.style.cursor = `url('${cursorPath}'), auto`;
+    };
+
+    // Set default cursor
+    setCustomCursor("/game/sprites/cursor.png");
+
+    const music = k.play("bgMusic");
+    music.value = 0.05;
+    music.loop = true;
+
+
+    const levelFunctions = {
+      "level1": level1,
+      "level2": level2,
+      "level3": level3,
+      "level4": level4,
+      "level5": level5,
+      "level6": level6,
+      "level7": level7,
+      "level8": level8,
+      "level9": level9,
+      "end": end
+    };
+
+    // Only call the specific level function that was passed
+    if (levelFunctions[level]) {
+      levelFunctions[level](k, music);
+    } else {
+      console.error(`Level "${level}" not found`);
+      // Default to level1 if an invalid level is passed
+      level1(k, music);
+    }
+
+    end(k);
+    k.go(level);
+  });
 }
