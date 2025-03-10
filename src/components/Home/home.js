@@ -241,6 +241,7 @@ const HomePage = () => {
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [coinBalance, setCoinBalance] = useState(0); // State for coins
+  const [badgeCount, setBadgeCount] = useState(0); // State for badges
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const [selectedMissedDate, setSelectedMissedDate] = useState(null); // Store missed date
   
@@ -309,34 +310,60 @@ const HomePage = () => {
         setLoginDates(weekStreakData.loginDates);
 
         // Fetch User Coins
-        const coinResponse = await fetch('http://localhost:3005/api/users/coins', {
+        const coinBadgesResponse = await fetch('http://localhost:3005/api/users/coinsandbadges', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             token: token,
           },
         });
-        const coinData = await coinResponse.json();
-        setCoinBalance(coinData.coins); // Set the coin balance
-
-        // Calculate continuous streak from most recent dates
+        const coinBadgesData = await coinBadgesResponse.json();
+        setCoinBalance(coinBadgesData.coins); // Set the coin balance
+        setBadgeCount(coinBadgesData.unlockedBadges);
+        // Calculate continuous streak considering yesterday's login as valid
         let streak = 0;
-        const today = new Date().toISOString().split('T')[0];
-        const sortedDates = weekStreakData.loginDates.sort((a, b) => new Date(b) - new Date(a));
-        
-        let currentDate = new Date(today);
-        let streakFlag = true;
-        // Start checking from today backwards
-        while (streak < sortedDates.length) {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        const todayString = today.toISOString().split('T')[0]; // '2025-03-10'
+        const yesterdayString = yesterday.toISOString().split('T')[0]; // '2025-03-09'
+
+        // Format all dates to ensure consistent comparison
+        const formattedLoginDates = weekStreakData.loginDates.map(date => 
+          new Date(date).toISOString().split('T')[0]
+        );
+
+        // Check if user has logged in today or yesterday
+        const hasLoggedInToday = formattedLoginDates.includes(todayString);
+        const hasLoggedInYesterday = formattedLoginDates.includes(yesterdayString);
+
+        // Determine the start date for counting the streak
+        let currentDate;
+        if (hasLoggedInToday) {
+          currentDate = new Date(today);
+        } else if (hasLoggedInYesterday) {
+          currentDate = new Date(yesterday);
+        } else {
+          // No recent login, streak is 0
+          setWeekStreak(0);
+          return;
+        }
+
+        // Count the streak working backwards from today/yesterday
+        while (true) {
           const dateToCheck = currentDate.toISOString().split('T')[0];
-          if (sortedDates.includes(dateToCheck)) {
+          
+          if (formattedLoginDates.includes(dateToCheck)) {
             streak++;
+            // Move to the previous day
             currentDate.setDate(currentDate.getDate() - 1);
           } else {
+            // Break when we find a day without a login
             break;
           }
         }
-        
+
         setWeekStreak(streak);
 
       } catch (err) {
@@ -673,7 +700,7 @@ const HomePage = () => {
                   <div>
                     <h3 className="font-semibold">BADGES EARNED</h3>
                     <p className="text-gray-500 flex items-center gap-1">
-                      <span className="text-purple-600 font-medium">3</span> unlocked
+                      <span className="text-purple-600 font-medium">{badgeCount}</span> unlocked
                     </p>
                   </div>
                 </div>

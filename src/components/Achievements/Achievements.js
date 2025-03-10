@@ -217,7 +217,7 @@ const Achievements = () => {
     const fetchCoins = async () => {
       const token = localStorage.getItem("token");
       try {
-        const coinResponse = await fetch("http://localhost:3005/api/users/coins", {
+        const coinResponse = await fetch("http://localhost:3005/api/users/coinsandbadges", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

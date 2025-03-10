@@ -30,7 +30,7 @@ const GameCompletionCard = () => {
     const fetchCoins = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch('http://localhost:3005/api/users/coins', {
+        const response = await fetch('http://localhost:3005/api/users/coinsandbadges', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
