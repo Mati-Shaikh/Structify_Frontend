@@ -85,9 +85,14 @@ export function end(k) {
     };
 
     k.onKeyPress("enter", () => {
-      handleKeyPress(() => {
-        window.location.href = `/game-completion?levelId=${currentLevelData.id}&levelName=${currentLevelData.name}`;
-      });
+      if (!currentLevelData) {
+         //do nothing
+      } else {
+        handleKeyPress(() => {
+          window.location.href = `/game-completion?levelId=${currentLevelData.id}&levelName=${currentLevelData.name}`;
+        });
+      }
     });
+    
   });
 }
