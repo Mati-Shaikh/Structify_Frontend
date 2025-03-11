@@ -100,7 +100,7 @@ const BadgeCategory = ({ title, badges }) => {
     <div className="mb-8">
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
+        className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200"
       >
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
@@ -270,7 +270,7 @@ const Achievements = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Navbar />
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-6xl mx-auto p-8 mt-24">
         {/* Progress Cards */}
