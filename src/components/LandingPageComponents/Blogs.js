@@ -20,7 +20,7 @@ const BlogsAndArticles = () => {
           </button>
         </div>
       </div>
-      <svg className="absolute bottom-0 left-0 w-full" height="48" viewBox="0 0 100 10" preserveAspectRatio="none">
+      <svg className="absolute bottom-0 left-0 w-full" height="48" viewBox="0 0 100 10" preserveAspectRatio="none"   style={{ marginBottom: "-1px" }}>
         <path d="M0 0 C 30 10, 70 10, 100 0 L 100 10 L 0 10 Z" fill="#000" />
       </svg>
     </div>

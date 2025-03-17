@@ -48,6 +48,7 @@ const Features = () => {
         className="absolute top-0 left-0 right-0 h-8 bg-white"
         style={{
           clipPath: "polygon(0 0%, 100% 0%, 100% 100%, 66% 0%, 33% 100%, 0 0%)",
+          marginTop: "-1px"
         }}
       ></div>
       <div className="max-w-6xl mx-auto px-4 relative z-10">
