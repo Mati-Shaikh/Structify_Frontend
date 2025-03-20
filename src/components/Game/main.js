@@ -10,6 +10,10 @@ import { level6 } from "./level6";
 import { level7 } from "./level7";
 import { level8 } from "./level8";
 import { level9 } from "./level9";
+import { level0 } from "./level0";
+import { level11 } from "./level11";
+import { level12 } from "./level12";
+import { level13 } from "./level13";
 
 export default function main(level) {
   const k = kaplay({
@@ -26,6 +30,9 @@ export default function main(level) {
 
   //Loading sprites
   k.loadSprite("boggy", "/game/sprites/boggy.png");
+  k.loadSprite("boook", "/game/sprites/boook.png");
+  k.loadSprite("user", "/game/sprites/user.png");
+
   k.loadSprite("head", "/game/sprites/headboggy.png");
   k.loadSprite("burp", "/game/sprites/burpman-o.png");
   k.loadSprite("coin", "/game/sprites/coin.png");
@@ -107,6 +114,7 @@ export default function main(level) {
 
 
     const levelFunctions = {
+      "level0":level0,
       "level1": level1,
       "level2": level2,
       "level3": level3,
@@ -116,6 +124,9 @@ export default function main(level) {
       "level7": level7,
       "level8": level8,
       "level9": level9,
+      "level11":level11,
+      "level12":level12,
+      "level13":level13,
       "end": end
     };
 
@@ -125,7 +136,7 @@ export default function main(level) {
     } else {
       console.error(`Level "${level}" not found`);
       // Default to level1 if an invalid level is passed
-      level1(k, music);
+      level0(k, music);
     }
 
     end(k);

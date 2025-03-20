@@ -90,6 +90,28 @@ const App = () => {
           path="/game-completion"
           element={<GameCompletionCard />}
         />
+
+<Route
+  path="/game/level0"
+  element={<Game level="level0" />}
+/>
+
+<Route
+  path="/game/level11"
+  element={<Game level="level11" />}
+/>
+
+
+<Route
+  path="/game/level12"
+  element={<Game level="level12" />}
+/>
+
+<Route
+  path="/game/level13"
+  element={<Game level="level13" />}
+/>
+        
       </Routes>
     </Router>
   );
